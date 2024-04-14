@@ -1,5 +1,6 @@
 import { useProduct } from "@/api/products";
 import { defaultPizzaImage } from "@/components/ProductListItem";
+import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
 import { PizzaSize } from "@/types";
 import { FontAwesome } from "@expo/vector-icons";
@@ -50,14 +51,15 @@ const ProductDetailsScreen = () => {
 					),
 				}}
 			/>
-			<Stack.Screen options={{ title: product.name }} />
-			<Image
-				source={{ uri: product.image ?? defaultPizzaImage }}
+			<Stack.Screen options={{ title: product?.name }} />
+			<RemoteImage
+				path={product?.image}
+				fallback={defaultPizzaImage}
 				style={styles.image}
 			/>
 
-			<Text style={styles.title}>€ {product.name}</Text>
-			<Text style={styles.price}>€ {product.price}</Text>
+			<Text style={styles.title}>€ {product?.name}</Text>
+			<Text style={styles.price}>€ {product?.price}</Text>
 
 			{/* <Button onPress={addToCart} text="Add to cart" /> */}
 		</View>
