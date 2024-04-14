@@ -5,7 +5,12 @@ import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useInsertProduct, useProduct, useUpdateProduct } from "@/api/products";
+import {
+	useDeleteProduct,
+	useInsertProduct,
+	useProduct,
+	useUpdateProduct,
+} from "@/api/products";
 const CreateProductScreen = () => {
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");
@@ -21,6 +26,7 @@ const CreateProductScreen = () => {
 	const { mutate: insertProduct } = useInsertProduct();
 	const { mutate: updateProduct } = useUpdateProduct();
 	const { data: updatingProduct } = useProduct(id);
+	const { mutate: deleteProduct } = useDeleteProduct();
 
 	const router = useRouter();
 
@@ -114,7 +120,12 @@ const CreateProductScreen = () => {
 	};
 
 	const onDelete = () => {
-		console.warn("Deleting product");
+		deleteProduct(id, {
+			onSuccess: () => {
+				resetFields();
+				router.replace("/(admin)");
+			},
+		});
 	};
 
 	const confirmDelete = () => {
