@@ -1,18 +1,36 @@
 import Button from "@/components/Button";
 import { defaultPizzaImage } from "@/components/ProductListItem";
 import Colors from "@/constants/Colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useInsertProduct, useProduct, useUpdateProduct } from "@/api/products";
 const CreateProductScreen = () => {
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");
 	const [errors, setErrors] = useState("");
 	const [image, setImage] = useState<string | null>(null);
 
-	const { id } = useLocalSearchParams();
-	const isUpdating = !!id;
+	const { id: idString } = useLocalSearchParams();
+	const id = parseFloat(
+		typeof idString === "string" ? idString : idString?.[0]
+	);
+	const isUpdating = !!idString;
+
+	const { mutate: insertProduct } = useInsertProduct();
+	const { mutate: updateProduct } = useUpdateProduct();
+	const { data: updatingProduct } = useProduct(id);
+
+	const router = useRouter();
+
+	useEffect(() => {
+		if (updatingProduct) {
+			setName(updatingProduct.name);
+			setPrice(updatingProduct.price.toString());
+			setImage(updatingProduct.image);
+		}
+	}, [updatingProduct]);
 
 	const resetFields = () => {
 		setName("");
@@ -39,7 +57,7 @@ const CreateProductScreen = () => {
 	const onSubmit = () => {
 		if (isUpdating) {
 			// update in the db
-			onUpdateCreate();
+			onUpdate();
 		} else {
 			// create in the db
 			onCreate();
@@ -51,24 +69,37 @@ const CreateProductScreen = () => {
 		if (!validateInput()) {
 			return;
 		}
-		console.warn("Creating product");
 
-		// update in the db
-
-		resetFields();
+		// save in the db
+		insertProduct(
+			{ name, price: parseFloat(price), image },
+			{
+				onSuccess: () => {
+					resetFields();
+					router.back();
+				},
+			}
+		);
 	};
 
-	const onUpdateCreate = () => {
+	const onUpdate = () => {
 		setErrors("");
 		if (!validateInput()) {
 			return;
 		}
-		console.warn("Updating product");
 
-		// save in the db
-
-		resetFields();
+		// update in the db
+		updateProduct(
+			{ id, name, price: parseFloat(price), image },
+			{
+				onSuccess: () => {
+					resetFields();
+					router.back();
+				},
+			}
+		);
 	};
+
 	const pickImage = async () => {
 		let result = await ImagePicker.launchImageLibraryAsync({
 			mediaTypes: ImagePicker.MediaTypeOptions.Images,

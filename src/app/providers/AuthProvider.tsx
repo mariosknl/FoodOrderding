@@ -1,8 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import {
-	createContext,
 	PropsWithChildren,
+	createContext,
 	useContext,
 	useEffect,
 	useState,
@@ -32,6 +32,7 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 			const {
 				data: { session },
 			} = await supabase.auth.getSession();
+
 			setSession(session);
 
 			if (session) {
@@ -43,11 +44,11 @@ export default function AuthProvider({ children }: PropsWithChildren) {
 					.single();
 				setProfile(data || null);
 			}
+
+			setLoading(false);
 		};
-		setLoading(false);
 
 		fetchSession();
-
 		supabase.auth.onAuthStateChange((_event, session) => {
 			setSession(session);
 		});
