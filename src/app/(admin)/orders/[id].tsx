@@ -1,35 +1,52 @@
+import { useOrderDetails, useUpdateOrder } from "@/api/orders";
 import OrderItemListItem from "@/components/OrderItemListItem";
 import OrderListItem from "@/components/OrderListItem";
 import Colors from "@/constants/Colors";
+// import { notifyUserAboutOrderUpdate } from "@/lib/notifications";
 import { OrderStatusList } from "@/types";
 import orders from "@assets/data/orders";
 import { Stack, useLocalSearchParams } from "expo-router";
-import { FlatList, Pressable, Text, View } from "react-native";
+import {
+	FlatList,
+	Text,
+	View,
+	Pressable,
+	ActivityIndicator,
+} from "react-native";
 
 export default function OrderDetailsScreen() {
-	const { id } = useLocalSearchParams();
+	const { id: idString } = useLocalSearchParams();
+	const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
-	const order = orders.find((order) => order.id.toString() === id);
+	const { data: order, isLoading, error } = useOrderDetails(id);
+	const { mutate: updateOrder } = useUpdateOrder();
 
-	if (!order) {
-		return (
-			<View>
-				<Text>Order not found</Text>
-			</View>
-		);
+	const updateStatus = async (status: string) => {
+		await updateOrder({
+			id: id,
+			updatedFields: { status },
+		});
+		// if (order) {
+		// 	await notifyUserAboutOrderUpdate({ ...order, status });
+		// }
+	};
+
+	if (isLoading) {
+		return <ActivityIndicator />;
+	}
+	if (error || !order) {
+		return <Text>Failed to fetch</Text>;
 	}
 
 	return (
-		<View style={{ padding: 10, gap: 20 }}>
-			<Stack.Screen options={{ title: `Order Details #${id}` }} />
-
-			<OrderListItem order={order} />
+		<View style={{ padding: 10, gap: 20, flex: 1 }}>
+			<Stack.Screen options={{ title: `Order #${id}` }} />
 
 			<FlatList
 				data={order.order_items}
 				renderItem={({ item }) => <OrderItemListItem item={item} />}
 				contentContainerStyle={{ gap: 10 }}
-				// ListHeaderComponent={() => <OrderListItem order={order} />}
+				ListHeaderComponent={() => <OrderListItem order={order} />}
 				ListFooterComponent={() => (
 					<>
 						<Text style={{ fontWeight: "bold" }}>Status</Text>
@@ -37,7 +54,7 @@ export default function OrderDetailsScreen() {
 							{OrderStatusList.map((status) => (
 								<Pressable
 									key={status}
-									onPress={() => console.warn("Update status")}
+									onPress={() => updateStatus(status)}
 									style={{
 										borderColor: Colors.light.tint,
 										borderWidth: 1,

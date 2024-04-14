@@ -1,10 +1,28 @@
-// import { FlatList } from "react-native-gesture-handler";
-import { FlatList } from "react-native";
-import orders from "../../../../../assets/data/orders";
+import { useAdminOrdersList } from "@/api/orders";
+import { ActivityIndicator, FlatList, Text } from "react-native";
 import OrderListItem from "../../../../components/OrderListItem";
-import { Stack } from "expo-router";
+import { useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { useQueryClient } from "@tanstack/react-query";
+import { useInsertOrderSubscription } from "@/api/orders/subscriptions";
 
 export default function OrdersScreen() {
+	const {
+		data: orders,
+		isLoading,
+		error,
+	} = useAdminOrdersList({ archived: false });
+
+	useInsertOrderSubscription();
+
+	if (isLoading) {
+		return <ActivityIndicator />;
+	}
+
+	if (error) {
+		return <Text>Failed to fetch</Text>;
+	}
+
 	return (
 		<FlatList
 			data={orders}
