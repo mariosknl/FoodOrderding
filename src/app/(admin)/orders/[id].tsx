@@ -2,6 +2,7 @@ import { useOrderDetails, useUpdateOrder } from "@/api/orders";
 import OrderItemListItem from "@/components/OrderItemListItem";
 import OrderListItem from "@/components/OrderListItem";
 import Colors from "@/constants/Colors";
+import { notifyUserAboutOrderUpdate } from "@/lib/notifications";
 // import { notifyUserAboutOrderUpdate } from "@/lib/notifications";
 import { OrderStatusList } from "@/types";
 import orders from "@assets/data/orders";
@@ -26,9 +27,10 @@ export default function OrderDetailsScreen() {
 			id: id,
 			updatedFields: { status },
 		});
-		// if (order) {
-		// 	await notifyUserAboutOrderUpdate({ ...order, status });
-		// }
+		console.log("notify:", order?.user_id);
+		if (order) {
+			await notifyUserAboutOrderUpdate({ ...order, status });
+		}
 	};
 
 	if (isLoading) {
