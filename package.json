@@ -43,7 +43,7 @@
     "react-native-tab-view": "^3.5.2",
     "react-native-url-polyfill": "^2.0.0",
     "react-native-web": "~0.19.6",
-    "@stripe/stripe-react-native": "~0.37.0",
+    "@stripe/stripe-react-native": "~0.38.0",
     "expo-notifications": "~0.28.0",
     "expo-device": "~6.0.0",
     "expo-constants": "~16.0.0"
