@@ -13,8 +13,8 @@ export type Enums<T extends keyof Database["public"]["Enums"]> =
 	Database["public"]["Enums"][T];
 
 export type Product = {
-	id: number;
-	image: string | null;
+	id: number | string;
+	img: string | null;
 	name: string;
 	price: number;
 };

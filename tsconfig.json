@@ -9,7 +9,8 @@
 			"@constants/*": ["src/constants/*"],
 			"@assets/*": ["assets/*"],
 			"@providers/*": ["src/app/providers/*"],
-			"@lib/*": ["src/lib/*"]
+			"@lib/*": ["src/lib/*"],
+			"@store/*": ["src/store/*"]
 		}
 	},
 	"include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"]
