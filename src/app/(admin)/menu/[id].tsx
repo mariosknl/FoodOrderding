@@ -1,4 +1,4 @@
-import { useProduct } from "@/api/products";
+import { useItem } from "@/api/products";
 import { defaultPizzaImage } from "@/components/ProductListItem";
 import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
@@ -18,9 +18,12 @@ const sizes: PizzaSize[] = ["S", "M", "L", "XL"];
 
 const ProductDetailsScreen = () => {
 	const { id: idString } = useLocalSearchParams();
+
+	if (!idString) return;
+
 	const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
-	const { data: product, error, isLoading } = useProduct(id);
+	const { data: product, error, isLoading } = useItem(id);
 
 	if (isLoading) {
 		return <ActivityIndicator />;

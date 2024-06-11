@@ -1,7 +1,6 @@
 import {
 	ActivityIndicator,
 	Dimensions,
-	FlatList,
 	Image,
 	ScrollView,
 	StyleSheet,
@@ -9,8 +8,7 @@ import {
 	View,
 } from "react-native";
 
-import { useProductList } from "@/api/products";
-import ProductListItem from "@components/ProductListItem";
+import { useItemsList } from "@/api/products";
 import Colors from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Categories from "@/components/Categories";
@@ -19,7 +17,7 @@ import TopOffers from "@/components/TopOffers";
 const { width, height } = Dimensions.get("window");
 
 export default function MenuScreen() {
-	const { data: products, error, isLoading } = useProductList();
+	const { data: products, error, isLoading } = useItemsList();
 
 	if (isLoading) {
 		return <ActivityIndicator />;
@@ -38,18 +36,11 @@ export default function MenuScreen() {
 				/>
 			</View>
 
-			<ScrollView style={{ position: "absolute", top: 280 }}>
+			<ScrollView style={{ position: "absolute", top: 250 }}>
 				<Categories />
-				<Text style={{ paddingHorizontal: 15 }}>Top offer today</Text>
+				<Text style={{ paddingHorizontal: 15 }}>Top offers today</Text>
 				<TopOffers />
 			</ScrollView>
-			{/* <FlatList
-				data={products}
-				renderItem={({ item }) => <ProductListItem product={item} />}
-				numColumns={2}
-				contentContainerStyle={{ gap: 10, padding: 10 }}
-				columnWrapperStyle={{ gap: 10 }}
-			/> */}
 		</SafeAreaView>
 	);
 }
@@ -61,6 +52,6 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width,
-		height: height / 3,
+		height: height / 3.5,
 	},
 });

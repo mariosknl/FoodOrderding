@@ -1,8 +1,31 @@
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+	ActivityIndicator,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
-import { shopInfo } from "@assets/data/restaurant";
+import { Link, useSegments } from "expo-router";
+import { useCategoryList } from "@/api/products";
+import RemoteImage from "./RemoteImage";
 const Categories = () => {
+	const segments = useSegments();
+	const { data: categories, error, isLoading } = useCategoryList();
+
+	if (isLoading) <ActivityIndicator />;
+
+	if (error) <Text>Failed to fetch categories</Text>;
+
+	if (!categories) return null;
+
+	if (error) {
+		return <Text>Failed to fetch categories</Text>;
+	}
+
+	let imageSource = require("@assets/images/defaultΙmage.png");
+
 	return (
 		<ScrollView
 			horizontal
@@ -11,15 +34,15 @@ const Categories = () => {
 				padding: 15,
 			}}
 		>
-			{shopInfo.products.map(({ category, types }, index) => (
-				<Link key={index} href={`/(user)/menu/category/${category}`}>
+			{categories.map(({ category_image, name, id }) => (
+				<Link key={id} href={`/${segments[0]}/menu/category/${name}`}>
 					<View style={styles.categoryCard}>
-						<Image
-							source={types[0].items[0].img}
+						<RemoteImage
+							path={category_image}
 							style={styles.image}
-							resizeMode="contain"
+							fallback={imageSource}
 						/>
-						<Text style={styles.categoryText}>{category}</Text>
+						<Text style={styles.categoryText}>{name}</Text>
 					</View>
 				</Link>
 			))}

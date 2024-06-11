@@ -1,23 +1,32 @@
-import Button from "@/components/Button";
-import { defaultPizzaImage } from "@/components/ProductListItem";
-import Colors from "@/constants/Colors";
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
-import * as ImagePicker from "expo-image-picker";
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import * as FileSystem from "expo-file-system";
 import {
+	useCategoryList,
 	useDeleteProduct,
-	useInsertProduct,
+	useInsertCategory,
 	useItem,
 	useUpdateProduct,
 } from "@/api/products";
-import { randomUUID } from "expo-crypto";
+import Button from "@/components/Button";
+import Colors from "@/constants/Colors";
 import { supabase } from "@/lib/supabase";
 import { decode } from "base64-arraybuffer";
-const CreateProductScreen = () => {
+import { randomUUID } from "expo-crypto";
+import * as FileSystem from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
+import {
+	Alert,
+	Image,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TextInput,
+	View,
+} from "react-native";
+
+const CreateCategoryScreen = () => {
 	const [name, setName] = useState("");
-	const [price, setPrice] = useState("");
+	const [types, setTypes] = useState([{ name: "" }]);
 	const [errors, setErrors] = useState("");
 	const [image, setImage] = useState<string | null>(null);
 
@@ -27,26 +36,41 @@ const CreateProductScreen = () => {
 		typeof idString === "string" ? idString : idString?.[0] ?? ""
 	);
 
+	let imageSource = image
+		? { uri: image }
+		: require("@assets/images/defaultΙmage.png");
+
+	const handleAddType = () => {
+		setTypes([...types, { name: "" }]);
+	};
+
+	const handleTypeChange = (text: string, index: number) => {
+		const newTypes = [...types];
+		newTypes[index].name = text;
+		setTypes(newTypes);
+	};
+
 	const isUpdating = !!idString;
 
-	const { mutate: insertProduct } = useInsertProduct();
+	const { mutate: insertCategory } = useInsertCategory();
 	const { mutate: updateProduct } = useUpdateProduct();
 	const { data: updatingProduct } = useItem(id);
 	const { mutate: deleteProduct } = useDeleteProduct();
+	const categories = useCategoryList();
 
 	const router = useRouter();
 
 	useEffect(() => {
 		if (updatingProduct) {
 			setName(updatingProduct.name);
-			setPrice(updatingProduct.price.toString());
 			setImage(updatingProduct.img);
 		}
 	}, [updatingProduct]);
 
 	const resetFields = () => {
 		setName("");
-		setPrice("");
+		setTypes([{ name: "" }]);
+		setImage(null);
 	};
 
 	const validateInput = () => {
@@ -54,15 +78,6 @@ const CreateProductScreen = () => {
 			setErrors("Name is required");
 			return false;
 		}
-		if (!price) {
-			setErrors("Price is required");
-			return false;
-		}
-		if (isNaN(parseFloat(price))) {
-			setErrors("Price is not a number");
-			return false;
-		}
-
 		return true;
 	};
 
@@ -82,18 +97,52 @@ const CreateProductScreen = () => {
 			return;
 		}
 
-		const imagePath = await uploadImage();
+		try {
+			const imagePath = await uploadImage();
 
-		// save in the db
-		insertProduct(
-			{ name, price: parseFloat(price), image: imagePath },
-			{
-				onSuccess: () => {
-					resetFields();
-					router.back();
-				},
-			}
-		);
+			// save in the db
+			insertCategory(
+				{ name, category_image: imagePath },
+				{
+					onSuccess: async (newCategory) => {
+						let newType;
+						try {
+							const typeInserts = types.map((type) => ({
+								category_id: newCategory.id,
+								name: type.name,
+							}));
+
+							const { data: newTypeData, error: typesError } = await supabase
+								.from("types")
+								.insert(typeInserts)
+								.select("*");
+
+							if (typesError) {
+								throw new Error(typesError.message);
+							}
+
+							newType = newTypeData;
+						} catch (error) {
+							console.log("error on insertType", error);
+						} finally {
+							resetFields();
+							Alert.alert("Success", "Category and types created successfully");
+							router.back();
+						}
+						return newType;
+					},
+					onError: (error: any) => {
+						if (error) {
+							console.log("Error onCreate:", error);
+						} else {
+							console.log("Error onCreate: error object is null");
+						}
+					},
+				}
+			);
+		} catch (error: any) {
+			Alert.alert("Error", error.message);
+		}
 	};
 
 	const onUpdate = async () => {
@@ -102,18 +151,22 @@ const CreateProductScreen = () => {
 			return;
 		}
 
-		const imagePath = await uploadImage();
+		try {
+			const imagePath = await uploadImage();
 
-		// update in the db
-		updateProduct(
-			{ id, name, price: parseFloat(price), image: imagePath },
-			{
-				onSuccess: () => {
-					resetFields();
-					router.back();
-				},
-			}
-		);
+			// update in the db
+			updateProduct(
+				{ id, name, image: imagePath },
+				{
+					onSuccess: () => {
+						resetFields();
+						router.back();
+					},
+				}
+			);
+		} catch (error: any) {
+			Alert.alert("Error", error.message);
+		}
 	};
 
 	const pickImage = async () => {
@@ -161,7 +214,7 @@ const CreateProductScreen = () => {
 	};
 
 	const confirmDelete = () => {
-		Alert.alert("Confirm", "Are you sure you want to delete this product?", [
+		Alert.alert("Confirm", "Are you sure you want to delete this category?", [
 			{
 				text: "Cancel",
 			},
@@ -176,12 +229,9 @@ const CreateProductScreen = () => {
 	return (
 		<View style={styles.container}>
 			<Stack.Screen
-				options={{ title: isUpdating ? "Update Product" : "Create Product" }}
+				options={{ title: isUpdating ? "Update Category" : "Create Category" }}
 			/>
-			<Image
-				source={{ uri: image ?? defaultPizzaImage }}
-				style={styles.image}
-			/>
+			<Image source={imageSource} style={styles.image} />
 			<Text onPress={pickImage} style={styles.textButton}>
 				Select Image
 			</Text>
@@ -194,16 +244,21 @@ const CreateProductScreen = () => {
 				style={styles.input}
 			/>
 
-			<Text style={styles.label}>Price (€)</Text>
-			<TextInput
-				value={price}
-				onChangeText={setPrice}
-				placeholder="9.99"
-				style={styles.input}
-				keyboardType="numeric"
-			/>
+			<ScrollView>
+				<Text style={styles.label}>Types:</Text>
+				{types.map((type, index) => (
+					<TextInput
+						key={index}
+						value={type.name}
+						onChangeText={(text) => handleTypeChange(text, index)}
+						style={styles.input}
+						keyboardType="numeric"
+					/>
+				))}
+			</ScrollView>
 
 			<Text style={{ color: "red" }}>{errors}</Text>
+			<Button onPress={handleAddType} text="Add Type" />
 			<Button onPress={onSubmit} text={isUpdating ? "Update" : "Create"} />
 			{isUpdating && (
 				<Text onPress={confirmDelete} style={styles.textButton}>
@@ -244,4 +299,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default CreateProductScreen;
+export default CreateCategoryScreen;

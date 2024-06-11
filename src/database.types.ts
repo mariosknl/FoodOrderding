@@ -9,6 +9,51 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      categories: {
+        Row: {
+          category_image: string | null
+          id: number
+          name: string
+        }
+        Insert: {
+          category_image?: string | null
+          id?: number
+          name: string
+        }
+        Update: {
+          category_image?: string | null
+          id?: number
+          name?: string
+        }
+        Relationships: []
+      }
+      items: {
+        Row: {
+          id: string
+          img: string | null
+          info: string | null
+          name: string
+          price: number
+          type_id: number | null
+        }
+        Insert: {
+          id: string
+          img?: string | null
+          info?: string | null
+          name: string
+          price: number
+          type_id?: number | null
+        }
+        Update: {
+          id?: string
+          img?: string | null
+          info?: string | null
+          name?: string
+          price?: number
+          type_id?: number | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -110,27 +155,33 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          expo_push_token: string | null
           full_name: string | null
           group: string
           id: string
+          stripe_customer_id: string | null
           updated_at: string | null
           username: string | null
           website: string | null
         }
         Insert: {
           avatar_url?: string | null
+          expo_push_token?: string | null
           full_name?: string | null
           group?: string
           id: string
+          stripe_customer_id?: string | null
           updated_at?: string | null
           username?: string | null
           website?: string | null
         }
         Update: {
           avatar_url?: string | null
+          expo_push_token?: string | null
           full_name?: string | null
           group?: string
           id?: string
+          stripe_customer_id?: string | null
           updated_at?: string | null
           username?: string | null
           website?: string | null
@@ -141,6 +192,32 @@ export type Database = {
             columns: ["id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      types: {
+        Row: {
+          category_id: number
+          id: number
+          name: string
+        }
+        Insert: {
+          category_id: number
+          id?: number
+          name: string
+        }
+        Update: {
+          category_id?: number
+          id?: number
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "types_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
             referencedColumns: ["id"]
           },
         ]

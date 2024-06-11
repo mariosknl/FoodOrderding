@@ -1,4 +1,4 @@
-import { useProduct } from "@/api/products";
+import { useItem } from "@/api/products";
 import { useCart } from "@/app/providers/CartProvider";
 import Button from "@/components/Button";
 import { defaultPizzaImage } from "@/components/ProductListItem";
@@ -24,7 +24,7 @@ const ProductDetailsScreen = () => {
 	if (!idString) return null;
 	const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
-	const { data: product, error, isLoading } = useProduct(id);
+	const { data: product, error, isLoading } = useItem(id);
 	const { addItem } = useCart();
 
 	const router = useRouter();
