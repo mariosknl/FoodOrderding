@@ -2,11 +2,34 @@ import { supabase } from "@/lib/supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { InsertTables, UpdateTables } from "@/types";
 
-export const useItemsList = () => {
+export const useItemsList = (categoryId: number) => {
 	return useQuery({
-		queryKey: ["items"],
+		queryKey: ["items", categoryId],
 		queryFn: async () => {
-			const { data, error } = await supabase.from("items").select("*");
+			const { data, error } = await supabase
+				.from("items")
+				.select(
+					`
+						id,
+						name,
+						price,
+						img,
+						info,
+						type_id,
+						types (
+								id,
+								name,
+								category_id,
+								categories (
+										id,
+										name,
+										category_image
+								)
+						)
+					`
+				)
+				.eq("types.category_id", categoryId);
+
 			if (error) {
 				throw new Error(error.message);
 			}
@@ -49,13 +72,12 @@ export const useCategoryList = () => {
 
 export const useCategory = (categoryId: number) => {
 	return useQuery({
-		queryKey: ["items", categoryId],
+		queryKey: ["categories", categoryId],
 		queryFn: async () => {
 			const { data, error } = await supabase
-				.from("items")
+				.from("categories")
 				.select("*")
-				.eq("id", categoryId)
-				.single();
+				.eq("id", categoryId);
 
 			if (error) {
 				throw new Error(error.message);
@@ -93,6 +115,23 @@ export const useTypesList = () => {
 		queryKey: ["types"],
 		queryFn: async () => {
 			const { data, error } = await supabase.from("types").select("*");
+
+			if (error) {
+				throw new Error(error.message);
+			}
+			return data;
+		},
+	});
+};
+
+export const useTypes = (categoryId: number) => {
+	return useQuery({
+		queryKey: ["types"],
+		queryFn: async () => {
+			const { data, error } = await supabase
+				.from("types")
+				.select("*")
+				.eq("category_id", categoryId);
 
 			if (error) {
 				throw new Error(error.message);

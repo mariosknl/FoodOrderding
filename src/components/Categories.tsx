@@ -35,7 +35,13 @@ const Categories = () => {
 			}}
 		>
 			{categories.map(({ category_image, name, id }) => (
-				<Link key={id} href={`/${segments[0]}/menu/category/${name}`}>
+				<Link
+					key={id}
+					href={{
+						pathname: `/${segments[0]}/menu/category/${name}`,
+						params: { id },
+					}}
+				>
 					<View style={styles.categoryCard}>
 						<RemoteImage
 							path={category_image}

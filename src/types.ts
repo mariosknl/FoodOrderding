@@ -22,6 +22,25 @@ export type Product = {
 	price: number;
 };
 
+export type ItemType = {
+	id: number;
+	img: string | null;
+	info: string | null;
+	name: string;
+	price: number;
+	type_id: number | null;
+	types?: {
+		id: number;
+		name: string;
+		category_id: number;
+		categories?: {
+			id: number;
+			name: string;
+			category_image: string | null;
+		} | null;
+	} | null;
+};
+
 export type PizzaSize = "S" | "M" | "L" | "XL";
 
 export type CartItem = {

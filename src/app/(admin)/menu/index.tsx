@@ -17,15 +17,15 @@ import TopOffers from "@/components/TopOffers";
 const { width, height } = Dimensions.get("window");
 
 export default function MenuScreen() {
-	const { data: products, error, isLoading } = useItemsList();
+	// const { data: products, error, isLoading } = useItemsList();
 
-	if (isLoading) {
-		return <ActivityIndicator />;
-	}
+	// if (isLoading) {
+	// 	return <ActivityIndicator />;
+	// }
 
-	if (error) {
-		return <Text>Failed to fetch products</Text>;
-	}
+	// if (error) {
+	// 	return <Text>Failed to fetch products</Text>;
+	// }
 	return (
 		<SafeAreaView style={styles.container}>
 			<View style={{ top: 0, position: "absolute" }}>

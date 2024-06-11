@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
+	ActivityIndicator,
 	Dimensions,
 	Image,
 	ListRenderItem,
@@ -22,16 +23,23 @@ import Animated, {
 	useScrollViewOffset,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useCategory } from "@/api/products";
+import { useCategory, useItem, useItemsList, useTypes } from "@/api/products";
+import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
+import { ItemType, Tables } from "@/types";
+import RemoteImage from "@/components/RemoteImage";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
 
 const CategoryPage = () => {
-	const { category } = useLocalSearchParams();
-	const { items, total } = useBasketStore();
+	const { category, id } = useLocalSearchParams();
+	console.log(category, id);
 
-	// const {data: categoryName} = useCategory(category)
+	if (!category || !id || typeof id !== "string") {
+		return null;
+	}
+	const { data: items, error, isPending } = useItemsList(parseFloat(id));
 
 	const scrollRef = useAnimatedRef<Animated.ScrollView>();
 	const scrollOffset = useScrollViewOffset(scrollRef);
@@ -64,24 +72,38 @@ const CategoryPage = () => {
 		};
 	});
 
-	// Function to get products for a specific category
-	const getCategoryProducts = (categoryName: string) => {
-		const category = shopInfo.products.find(
-			(item) => item.category === categoryName
-		);
+	const filteredItems: ItemType[] = (items || []).filter(
+		(item) => item.types && item.types.category_id === parseFloat(id)
+	);
 
-		if (!category) {
+	const convertItems = (filteredItems: ItemType[]) => {
+		if (!filteredItems) {
 			return [];
 		}
+		// Group items by 'types.name'
+		const groupedItems: Record<string, Tables<"items">[]> =
+			filteredItems?.reduce((acc: Record<string, ItemType[]>, item) => {
+				if (item.types) {
+					const key = item.types.name;
+					if (!acc[key]) {
+						acc[key] = [];
+					}
+					acc[key].push(item);
+				}
+				return acc;
+			}, {});
 
-		return category.types.map((type, index) => ({
-			title: type.category,
-			data: type.items,
+		// Map grouped items into desired structure
+		return Object.entries(groupedItems).map(([title, data], index) => ({
+			title,
+			data,
 			index,
 		}));
 	};
 
-	const products = getCategoryProducts(category as string);
+	const convertedItems = convertItems(filteredItems);
+
+	let imageSource = require("@assets/images/defaultΙmage.png");
 
 	const renderItem: ListRenderItem<any> = ({ item, index }) => (
 		<Link
@@ -97,7 +119,11 @@ const CategoryPage = () => {
 					<Text style={styles.dishText}>{item.info}</Text>
 					<Text style={styles.dishText}>€{item.price}</Text>
 				</View>
-				<Image source={item.img} style={styles.dishImage} />
+				<RemoteImage
+					path={item.img}
+					style={styles.dishImage}
+					fallback={imageSource}
+				/>
 			</Pressable>
 		</Link>
 	);
@@ -126,7 +152,10 @@ const CategoryPage = () => {
 			/>
 			<Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
 				<Animated.Image
-					source={products[0].data[0].img}
+					source={
+						(items && items[0]?.types?.categories?.category_image) ||
+						require("@assets/images/defaultΙmage.png")
+					}
 					style={[styles.image, imageAnimatedStyle]}
 				/>
 
@@ -136,7 +165,7 @@ const CategoryPage = () => {
 						contentContainerStyle={{ paddingBottom: 50 }}
 						keyExtractor={(item, index) => `${item.id}-${index}`}
 						scrollEnabled={false}
-						sections={products}
+						sections={convertedItems}
 						renderItem={renderItem}
 						renderSectionHeader={({ section: { title } }) => (
 							<Text style={styles.sectionHeader}>{title}</Text>

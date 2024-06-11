@@ -52,7 +52,15 @@ export type Database = {
           price?: number
           type_id?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "items_type_id_fkey"
+            columns: ["type_id"]
+            isOneToOne: false
+            referencedRelation: "types"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       order_items: {
         Row: {
