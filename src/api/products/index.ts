@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { InsertTables } from "@/types";
+import { InsertTables, UpdateTables } from "@/types";
 
 export const useItemsList = () => {
 	return useQuery({
@@ -145,71 +145,46 @@ export const useInsertItem = () => {
 	});
 };
 
-export const useInsertProduct = () => {
+export const useUpdateItem = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		async mutationFn(data: any) {
-			const { error, data: newProduct } = await supabase
+		async mutationFn(data: UpdateTables<"items">) {
+			const { error, data: updatedItem } = await supabase
 				.from("items")
-				.insert({
-					name: data.name,
-					img: data.img,
-					price: data.price,
-				})
-				.single();
-
-			if (error) {
-				throw new Error(error.message);
-			}
-			return newProduct;
-		},
-		async onSuccess() {
-			await queryClient.invalidateQueries({ queryKey: ["items"] });
-		},
-	});
-};
-
-export const useUpdateProduct = () => {
-	const queryClient = useQueryClient();
-
-	return useMutation({
-		async mutationFn(data: any) {
-			const { error, data: updatedProduct } = await supabase
-				.from("products")
 				.update({
 					name: data.name,
-					image: data.image,
+					image: data.img,
 					price: data.price,
 				})
-				.eq("id", data.id)
+				.eq("id", data.id!)
 				.select()
 				.single();
 
 			if (error) {
 				throw new Error(error.message);
 			}
-			return updatedProduct;
+			return updatedItem;
 		},
 		async onSuccess(_, { id }) {
-			await queryClient.invalidateQueries({ queryKey: ["products"] });
-			await queryClient.invalidateQueries({ queryKey: ["products", id] });
+			await queryClient.invalidateQueries({ queryKey: ["items"] });
+			await queryClient.invalidateQueries({ queryKey: ["items", id] });
 		},
 	});
 };
 
-export const useDeleteProduct = () => {
+export const useDeleteItem = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
 		async mutationFn(id: number) {
-			const { error } = await supabase.from("products").delete().eq("id", id);
+			const { error } = await supabase.from("items").delete().eq("id", id);
 			if (error) {
 				throw new Error(error.message);
 			}
 		},
 		async onSuccess() {
-			await queryClient.invalidateQueries({ queryKey: ["products"] });
+			await queryClient.invalidateQueries({ queryKey: ["items"] });
 		},
 	});
 };

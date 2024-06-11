@@ -1,9 +1,9 @@
 import {
 	useCategoryList,
-	useDeleteProduct,
+	useDeleteItem,
 	useInsertCategory,
 	useItem,
-	useUpdateProduct,
+	useUpdateItem,
 } from "@/api/products";
 import Button from "@/components/Button";
 import Colors from "@/constants/Colors";
@@ -53,9 +53,9 @@ const CreateCategoryScreen = () => {
 	const isUpdating = !!idString;
 
 	const { mutate: insertCategory } = useInsertCategory();
-	const { mutate: updateProduct } = useUpdateProduct();
+	const { mutate: updateProduct } = useUpdateItem();
 	const { data: updatingProduct } = useItem(id);
-	const { mutate: deleteProduct } = useDeleteProduct();
+	const { mutate: deleteProduct } = useDeleteItem();
 	const categories = useCategoryList();
 
 	const router = useRouter();
@@ -156,7 +156,7 @@ const CreateCategoryScreen = () => {
 
 			// update in the db
 			updateProduct(
-				{ id, name, image: imagePath },
+				{ id, name, img: imagePath },
 				{
 					onSuccess: () => {
 						resetFields();

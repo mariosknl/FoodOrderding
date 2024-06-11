@@ -87,13 +87,6 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "public_order_items_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
-            referencedColumns: ["id"]
-          },
         ]
       }
       orders: {
@@ -127,30 +120,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      products: {
-        Row: {
-          created_at: string
-          id: number
-          image: string | null
-          name: string
-          price: number
-        }
-        Insert: {
-          created_at?: string
-          id?: number
-          image?: string | null
-          name: string
-          price: number
-        }
-        Update: {
-          created_at?: string
-          id?: number
-          image?: string | null
-          name?: string
-          price?: number
-        }
-        Relationships: []
       }
       profiles: {
         Row: {

@@ -1,5 +1,4 @@
 import Button from "@/components/Button";
-import { defaultPizzaImage } from "@/components/ProductListItem";
 import Colors from "@/constants/Colors";
 import { useEffect, useState } from "react";
 import {
@@ -16,12 +15,11 @@ import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import * as FileSystem from "expo-file-system";
 import {
 	useCategoryList,
-	useDeleteProduct,
+	useDeleteItem,
 	useInsertItem,
-	useInsertProduct,
 	useItem,
 	useTypesList,
-	useUpdateProduct,
+	useUpdateItem,
 } from "@/api/products";
 import { randomUUID } from "expo-crypto";
 import { supabase } from "@/lib/supabase";
@@ -50,10 +48,11 @@ const CreateProductScreen = () => {
 
 	const isUpdating = !!idString;
 
-	const { mutate: insertItem } = useInsertItem();
-	const { mutate: updateProduct } = useUpdateProduct();
-	const { data: updatingProduct } = useItem(id);
-	const { mutate: deleteProduct } = useDeleteProduct();
+	const mutation = useInsertItem();
+	const { mutate: insertItem, isPending } = mutation;
+	const { mutate: updateItem } = useUpdateItem();
+	const { data: updatingItem } = useItem(id);
+	const { mutate: deleteItem } = useDeleteItem();
 	const { data: categories } = useCategoryList();
 	const { data: types } = useTypesList();
 
@@ -64,12 +63,12 @@ const CreateProductScreen = () => {
 	const router = useRouter();
 
 	useEffect(() => {
-		if (updatingProduct) {
-			setName(updatingProduct.name);
-			setPrice(updatingProduct.price.toString());
-			setImage(updatingProduct.img);
+		if (updatingItem) {
+			setName(updatingItem.name);
+			setPrice(updatingItem.price.toString());
+			setImage(updatingItem.img);
 		}
-	}, [updatingProduct]);
+	}, [updatingItem]);
 
 	const resetFields = () => {
 		setName("");
@@ -121,6 +120,7 @@ const CreateProductScreen = () => {
 					type_id: typeValue,
 					info,
 				},
+
 				{
 					onSuccess: () => {
 						resetFields();
@@ -145,8 +145,8 @@ const CreateProductScreen = () => {
 		const imagePath = await uploadImage();
 
 		// update in the db
-		updateProduct(
-			{ id, name, price: parseFloat(price), image: imagePath },
+		updateItem(
+			{ id, name, price: parseFloat(price), img: imagePath },
 			{
 				onSuccess: () => {
 					resetFields();
@@ -192,7 +192,7 @@ const CreateProductScreen = () => {
 	};
 
 	const onDelete = () => {
-		deleteProduct(id, {
+		deleteItem(id, {
 			onSuccess: () => {
 				resetFields();
 				router.replace("/(admin)");
@@ -211,17 +211,6 @@ const CreateProductScreen = () => {
 				onPress: onDelete,
 			},
 		]);
-	};
-
-	const renderLabel = (type: "category" | "type") => {
-		if (categoryValue || isFocus) {
-			return (
-				<Text style={[styles.label, isFocus && { color: Colors.primary }]}>
-					{type === "category" ? "Κατηγορία" : "Τύπος"}
-				</Text>
-			);
-		}
-		return null;
 	};
 
 	return (
@@ -327,7 +316,11 @@ const CreateProductScreen = () => {
 			</View>
 
 			<Text style={{ color: "red" }}>{errors}</Text>
-			<Button onPress={onSubmit} text={isUpdating ? "Update" : "Create"} />
+			<Button
+				disabled={isPending}
+				onPress={onSubmit}
+				text={isPending ? "Creating..." : isUpdating ? "Update" : "Create"}
+			/>
 			{isUpdating && (
 				<Text onPress={confirmDelete} style={styles.textButton}>
 					Delete

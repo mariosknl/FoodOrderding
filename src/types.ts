@@ -12,6 +12,9 @@ export type UpdateTables<T extends keyof Database["public"]["Tables"]> =
 export type Enums<T extends keyof Database["public"]["Enums"]> =
 	Database["public"]["Enums"][T];
 
+export type InsertItemInput = InsertTables<"items">;
+export type InsertItemOutput = InsertTables<"items">;
+
 export type Product = {
 	id: number | string;
 	img: string | null;
