@@ -288,6 +288,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width: "50%",
+		height: undefined,
 		aspectRatio: 1,
 		alignSelf: "center",
 	},

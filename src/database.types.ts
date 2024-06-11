@@ -29,7 +29,7 @@ export type Database = {
       }
       items: {
         Row: {
-          id: string
+          id: number
           img: string | null
           info: string | null
           name: string
@@ -37,7 +37,7 @@ export type Database = {
           type_id: number | null
         }
         Insert: {
-          id: string
+          id?: number
           img?: string | null
           info?: string | null
           name: string
@@ -45,7 +45,7 @@ export type Database = {
           type_id?: number | null
         }
         Update: {
-          id?: string
+          id?: number
           img?: string | null
           info?: string | null
           name?: string

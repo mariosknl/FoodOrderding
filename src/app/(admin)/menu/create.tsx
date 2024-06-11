@@ -2,24 +2,41 @@ import Button from "@/components/Button";
 import { defaultPizzaImage } from "@/components/ProductListItem";
 import Colors from "@/constants/Colors";
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, Image, Alert } from "react-native";
+import {
+	View,
+	Text,
+	StyleSheet,
+	TextInput,
+	Image,
+	Alert,
+	ScrollView,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import * as FileSystem from "expo-file-system";
 import {
+	useCategoryList,
 	useDeleteProduct,
+	useInsertItem,
 	useInsertProduct,
 	useItem,
+	useTypesList,
 	useUpdateProduct,
 } from "@/api/products";
 import { randomUUID } from "expo-crypto";
 import { supabase } from "@/lib/supabase";
 import { decode } from "base64-arraybuffer";
+import { Dropdown } from "react-native-element-dropdown";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 const CreateProductScreen = () => {
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");
+	const [info, setInfo] = useState("");
 	const [errors, setErrors] = useState("");
 	const [image, setImage] = useState<string | null>(null);
+	const [categoryValue, setCategoryValue] = useState<number | null>(null);
+	const [typeValue, setTypeValue] = useState<number | null>(null);
+	const [isFocus, setIsFocus] = useState(false);
 
 	const { id: idString } = useLocalSearchParams();
 
@@ -27,12 +44,22 @@ const CreateProductScreen = () => {
 		typeof idString === "string" ? idString : idString?.[0] ?? ""
 	);
 
+	let imageSource = image
+		? { uri: image }
+		: require("@assets/images/defaultΙmage.png");
+
 	const isUpdating = !!idString;
 
-	const { mutate: insertProduct } = useInsertProduct();
+	const { mutate: insertItem } = useInsertItem();
 	const { mutate: updateProduct } = useUpdateProduct();
 	const { data: updatingProduct } = useItem(id);
 	const { mutate: deleteProduct } = useDeleteProduct();
+	const { data: categories } = useCategoryList();
+	const { data: types } = useTypesList();
+
+	const filteredTypes = types?.filter(
+		(type) => type.category_id === categoryValue
+	);
 
 	const router = useRouter();
 
@@ -82,18 +109,31 @@ const CreateProductScreen = () => {
 			return;
 		}
 
-		const imagePath = await uploadImage();
+		try {
+			const imagePath = await uploadImage();
 
-		// save in the db
-		insertProduct(
-			{ name, price: parseFloat(price), image: imagePath },
-			{
-				onSuccess: () => {
-					resetFields();
-					router.back();
+			// save in the db
+			insertItem(
+				{
+					price: parseFloat(price),
+					name,
+					img: imagePath,
+					type_id: typeValue,
+					info,
 				},
-			}
-		);
+				{
+					onSuccess: () => {
+						resetFields();
+						router.back();
+					},
+					onError: (error) => {
+						console.log("error", error);
+					},
+				}
+			);
+		} catch (error: any) {
+			Alert.alert("Error", error.message);
+		}
 	};
 
 	const onUpdate = async () => {
@@ -173,35 +213,118 @@ const CreateProductScreen = () => {
 		]);
 	};
 
+	const renderLabel = (type: "category" | "type") => {
+		if (categoryValue || isFocus) {
+			return (
+				<Text style={[styles.label, isFocus && { color: Colors.primary }]}>
+					{type === "category" ? "Κατηγορία" : "Τύπος"}
+				</Text>
+			);
+		}
+		return null;
+	};
+
 	return (
-		<View style={styles.container}>
+		<ScrollView contentContainerStyle={styles.container}>
 			<Stack.Screen
-				options={{ title: isUpdating ? "Update Product" : "Create Product" }}
+				options={{
+					title: isUpdating ? "Ανανέωση Προϊόντος" : "Δημιουργία Προϊόντος",
+				}}
 			/>
-			<Image
-				source={{ uri: image ?? defaultPizzaImage }}
-				style={styles.image}
-			/>
+			<Image source={imageSource} style={styles.image} />
 			<Text onPress={pickImage} style={styles.textButton}>
-				Select Image
+				Επιλογή Εικόνας
 			</Text>
 
-			<Text style={styles.label}>Name</Text>
+			<View>
+				<Dropdown
+					style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+					placeholderStyle={styles.placeholderStyle}
+					selectedTextStyle={styles.selectedTextStyle}
+					inputSearchStyle={styles.inputSearchStyle}
+					iconStyle={styles.iconStyle}
+					data={categories!}
+					search
+					maxHeight={300}
+					labelField="name"
+					valueField="id"
+					placeholder={!isFocus ? "Διάλεξε κατηγορία" : "..."}
+					searchPlaceholder="Search..."
+					value={categoryValue?.toString()}
+					onFocus={() => setIsFocus(true)}
+					onBlur={() => setIsFocus(false)}
+					onChange={(item) => {
+						setCategoryValue(item.id);
+						setIsFocus(false);
+					}}
+					renderLeftIcon={() => (
+						<FontAwesome
+							style={styles.icon}
+							color={isFocus ? "blue" : "black"}
+							name="list"
+							size={20}
+						/>
+					)}
+				/>
+			</View>
+
+			<View>
+				{categoryValue ? (
+					<Dropdown
+						style={[styles.dropdown, isFocus && { borderColor: "blue" }]}
+						placeholderStyle={styles.placeholderStyle}
+						selectedTextStyle={styles.selectedTextStyle}
+						inputSearchStyle={styles.inputSearchStyle}
+						iconStyle={styles.iconStyle}
+						data={filteredTypes!}
+						search
+						maxHeight={300}
+						labelField="name"
+						valueField="id"
+						placeholder={!isFocus ? "Διάλεξε Τύπο" : "..."}
+						searchPlaceholder="Search..."
+						value={typeValue?.toString()}
+						onFocus={() => setIsFocus(true)}
+						onBlur={() => setIsFocus(false)}
+						onChange={(item) => {
+							setTypeValue(item.id);
+							setIsFocus(false);
+						}}
+						renderLeftIcon={() => (
+							<AntDesign
+								style={styles.icon}
+								color={isFocus ? "blue" : "black"}
+								name="Safety"
+								size={20}
+							/>
+						)}
+					/>
+				) : null}
+			</View>
+
 			<TextInput
 				value={name}
 				onChangeText={setName}
-				placeholder="Name"
+				placeholder="Όνομα"
 				style={styles.input}
 			/>
-
-			<Text style={styles.label}>Price (€)</Text>
 			<TextInput
 				value={price}
 				onChangeText={setPrice}
-				placeholder="9.99"
+				placeholder="Τιμή"
 				style={styles.input}
-				keyboardType="numeric"
 			/>
+
+			<View>
+				<Text style={styles.title}>Πληροφορίες προϊόντος</Text>
+				<TextInput
+					multiline={true}
+					numberOfLines={2}
+					onChangeText={setInfo}
+					value={info}
+					style={styles.textarea}
+				/>
+			</View>
 
 			<Text style={{ color: "red" }}>{errors}</Text>
 			<Button onPress={onSubmit} text={isUpdating ? "Update" : "Create"} />
@@ -210,29 +333,34 @@ const CreateProductScreen = () => {
 					Delete
 				</Text>
 			)}
-		</View>
+		</ScrollView>
 	);
 };
 
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: "center",
+		justifyContent: "flex-start",
 		padding: 10,
-	},
-	label: {
-		color: "gray",
-		fontSize: 16,
+		gap: 8,
 	},
 	input: {
 		backgroundColor: "white",
 		padding: 10,
 		borderRadius: 5,
+	},
+	title: {
+		fontSize: 16,
+	},
+	textarea: {
+		backgroundColor: "white",
 		marginTop: 5,
-		marginBottom: 20,
+		borderRadius: 5,
+		height: 80,
 	},
 	image: {
 		width: "50%",
+		height: undefined,
 		aspectRatio: 1,
 		alignSelf: "center",
 	},
@@ -241,6 +369,39 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		color: Colors.light.tint,
 		marginVertical: 10,
+	},
+	dropdown: {
+		height: 50,
+		borderColor: "gray",
+		borderWidth: 0.5,
+		borderRadius: 8,
+		paddingHorizontal: 8,
+	},
+	label: {
+		position: "absolute",
+		backgroundColor: "white",
+		left: 22,
+		top: 8,
+		zIndex: 999,
+		paddingHorizontal: 8,
+		fontSize: 14,
+	},
+	icon: {
+		marginRight: 5,
+	},
+	placeholderStyle: {
+		fontSize: 16,
+	},
+	selectedTextStyle: {
+		fontSize: 16,
+	},
+	iconStyle: {
+		width: 20,
+		height: 20,
+	},
+	inputSearchStyle: {
+		height: 40,
+		fontSize: 16,
 	},
 });
 

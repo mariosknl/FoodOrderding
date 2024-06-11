@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { InsertTables } from "@/types";
 
 export const useItemsList = () => {
 	return useQuery({
@@ -68,7 +69,7 @@ export const useInsertCategory = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		async mutationFn(data: any) {
+		async mutationFn(data: InsertTables<"categories">) {
 			const { error: categoryError, data: newCategory } = await supabase
 				.from("categories")
 				.insert(data)
@@ -87,11 +88,25 @@ export const useInsertCategory = () => {
 	});
 };
 
+export const useTypesList = () => {
+	return useQuery({
+		queryKey: ["types"],
+		queryFn: async () => {
+			const { data, error } = await supabase.from("types").select("*");
+
+			if (error) {
+				throw new Error(error.message);
+			}
+			return data;
+		},
+	});
+};
+
 export const useInsertTypes = () => {
 	const queryClient = useQueryClient();
 
 	return useMutation({
-		async mutationFn(data: any) {
+		async mutationFn(data: InsertTables<"types">) {
 			console.log(data, "data from hook");
 			const { error: typesError, data: newType } = await supabase
 				.from("types")
@@ -105,6 +120,27 @@ export const useInsertTypes = () => {
 		},
 		async onSuccess(data) {
 			await queryClient.invalidateQueries({ queryKey: ["types"] });
+		},
+	});
+};
+
+export const useInsertItem = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		async mutationFn(data: InsertTables<"items">) {
+			const { error, data: newProduct } = await supabase
+				.from("items")
+				.insert(data)
+				.select("*");
+
+			if (error) {
+				throw new Error(error.message);
+			}
+			return newProduct;
+		},
+		async onSuccess() {
+			await queryClient.invalidateQueries({ queryKey: ["items"] });
 		},
 	});
 };
