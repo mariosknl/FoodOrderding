@@ -84,7 +84,7 @@ const CategoryPage = () => {
 		<Link
 			href={{
 				pathname: "(user)/menu/(modal)/[product]",
-				params: { id: item.id },
+				params: { id: item.id, category: category as string },
 			}}
 			asChild
 		>

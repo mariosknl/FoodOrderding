@@ -24,7 +24,7 @@ export default function MenuStack() {
 									)}
 								</Pressable>
 							</Link>
-							<Link href="/(admin)/menu/create" asChild>
+							<Link href={`menu/create`} asChild>
 								<Pressable>
 									{({ pressed }) => (
 										<FontAwesome
@@ -40,8 +40,8 @@ export default function MenuStack() {
 					),
 				}}
 			/>
-			<Stack.Screen name="category/[category]" options={{ title: "" }} />
-			<Stack.Screen name="(modal)/[product]" />
+			<Stack.Screen name={`category/[category]`} options={{ title: "" }} />
+			<Stack.Screen name={`menu/(modal)/[product]`} />
 		</Stack>
 	);
 }

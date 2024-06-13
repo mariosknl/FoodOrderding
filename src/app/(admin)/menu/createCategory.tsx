@@ -1,13 +1,18 @@
 import {
+	useCategory,
 	useCategoryList,
+	useDeleteCategory,
 	useDeleteItem,
 	useInsertCategory,
-	useItem,
+	useUpdateCategory,
 	useUpdateItem,
 } from "@/api/products";
 import Button from "@/components/Button";
+import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
+import { Tables } from "@/database.types";
 import { supabase } from "@/lib/supabase";
+import { useQueryClient } from "@tanstack/react-query";
 import { decode } from "base64-arraybuffer";
 import { randomUUID } from "expo-crypto";
 import * as FileSystem from "expo-file-system";
@@ -29,8 +34,9 @@ const CreateCategoryScreen = () => {
 	const [types, setTypes] = useState([{ name: "" }]);
 	const [errors, setErrors] = useState("");
 	const [image, setImage] = useState<string | null>(null);
+	const queryClient = useQueryClient();
 
-	const { id: idString } = useLocalSearchParams();
+	const { categoryId: idString } = useLocalSearchParams();
 
 	const id = parseFloat(
 		typeof idString === "string" ? idString : idString?.[0] ?? ""
@@ -53,19 +59,20 @@ const CreateCategoryScreen = () => {
 	const isUpdating = !!idString;
 
 	const { mutate: insertCategory } = useInsertCategory();
-	const { mutate: updateProduct } = useUpdateItem();
-	const { data: updatingProduct } = useItem(id);
-	const { mutate: deleteProduct } = useDeleteItem();
-	const categories = useCategoryList();
+	const { mutate: updateCategory } = useUpdateCategory(id);
+	const { data: updatingCategory } = useCategory(id);
+	const { mutate: deleteCategory } = useDeleteCategory();
 
 	const router = useRouter();
+	console.log("updatingCategory", updatingCategory);
 
 	useEffect(() => {
-		if (updatingProduct) {
-			setName(updatingProduct.name);
-			setImage(updatingProduct.img);
+		if (updatingCategory && isUpdating) {
+			setName(updatingCategory[0]?.name);
+			setImage(updatingCategory[0]?.category_image);
+			setTypes(updatingCategory[0]?.types);
 		}
-	}, [updatingProduct]);
+	}, [updatingCategory]);
 
 	const resetFields = () => {
 		setName("");
@@ -155,12 +162,39 @@ const CreateCategoryScreen = () => {
 			const imagePath = await uploadImage();
 
 			// update in the db
-			updateProduct(
-				{ id, name, img: imagePath },
+			updateCategory(
+				{ name, category_image: imagePath },
 				{
-					onSuccess: () => {
-						resetFields();
-						router.back();
+					onSuccess: async (_, { id }) => {
+						try {
+							await Promise.all(
+								types.map(async (type: any) => {
+									const { data, error } = await supabase
+										.from("types")
+										.update({ name: type.name })
+										.eq("id", type.id)
+										.select("*");
+
+									if (error) {
+										throw error;
+									}
+
+									return data;
+								})
+							);
+							await Promise.all([
+								queryClient.invalidateQueries({
+									queryKey: ["categories", id],
+								}),
+								queryClient.invalidateQueries({ queryKey: ["types"] }),
+								queryClient.invalidateQueries({ queryKey: ["types", id] }),
+							]);
+							Alert.alert("Success", "Category and types created successfully");
+							resetFields();
+							router.back();
+						} catch (error) {
+							console.log("error on updatingType", error);
+						}
 					},
 				}
 			);
@@ -205,10 +239,10 @@ const CreateCategoryScreen = () => {
 	};
 
 	const onDelete = () => {
-		deleteProduct(id, {
+		deleteCategory(id, {
 			onSuccess: () => {
 				resetFields();
-				router.replace("/(admin)");
+				router.replace("(admin)/menu");
 			},
 		});
 	};
@@ -229,11 +263,21 @@ const CreateCategoryScreen = () => {
 	return (
 		<View style={styles.container}>
 			<Stack.Screen
-				options={{ title: isUpdating ? "Update Category" : "Create Category" }}
+				options={{
+					title: isUpdating ? "Ανανέωση Κατηγορίας" : "Δημιουργία Κατηγορίας",
+				}}
 			/>
-			<Image source={imageSource} style={styles.image} />
+			{!isUpdating ? (
+				<Image source={imageSource} style={styles.image} />
+			) : (
+				<RemoteImage
+					path={image}
+					style={styles.image}
+					fallback="@assets/images/defaultΙmage.png"
+				/>
+			)}
 			<Text onPress={pickImage} style={styles.textButton}>
-				Select Image
+				Επιλογή Εικόνας
 			</Text>
 
 			<Text style={styles.label}>Name</Text>
@@ -246,10 +290,10 @@ const CreateCategoryScreen = () => {
 
 			<ScrollView>
 				<Text style={styles.label}>Types:</Text>
-				{types.map((type, index) => (
+				{types?.map((type, index) => (
 					<TextInput
 						key={index}
-						value={type.name}
+						value={type?.name}
 						onChangeText={(text) => handleTypeChange(text, index)}
 						style={styles.input}
 						keyboardType="numeric"
@@ -297,6 +341,30 @@ const styles = StyleSheet.create({
 		fontWeight: "bold",
 		color: Colors.light.tint,
 		marginVertical: 10,
+	},
+	dropdown: {
+		height: 50,
+		borderColor: "gray",
+		borderWidth: 0.5,
+		borderRadius: 8,
+		paddingHorizontal: 8,
+	},
+	icon: {
+		marginRight: 5,
+	},
+	placeholderStyle: {
+		fontSize: 16,
+	},
+	selectedTextStyle: {
+		fontSize: 16,
+	},
+	iconStyle: {
+		width: 20,
+		height: 20,
+	},
+	inputSearchStyle: {
+		height: 40,
+		fontSize: 16,
 	},
 });
 

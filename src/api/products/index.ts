@@ -44,7 +44,26 @@ export const useItem = (id: number) => {
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("items")
-				.select("*")
+				.select(
+					`
+						id,
+						name,
+						price,
+						img,
+						info,
+						type_id,
+						types (
+								id,
+								name,
+								category_id,
+								categories (
+										id,
+										name,
+										category_image
+								)
+						)
+					`
+				)
 				.eq("id", id)
 				.single();
 
@@ -53,6 +72,7 @@ export const useItem = (id: number) => {
 			}
 			return data;
 		},
+		refetchOnWindowFocus: true,
 	});
 };
 
@@ -67,6 +87,7 @@ export const useCategoryList = () => {
 			}
 			return data;
 		},
+		refetchOnWindowFocus: true,
 	});
 };
 
@@ -76,7 +97,18 @@ export const useCategory = (categoryId: number) => {
 		queryFn: async () => {
 			const { data, error } = await supabase
 				.from("categories")
-				.select("*")
+				.select(
+					`
+						id,
+						name,
+						category_image,
+						types (
+								id,
+								name,
+								category_id
+						)
+					`
+				)
 				.eq("id", categoryId);
 
 			if (error) {
@@ -84,6 +116,7 @@ export const useCategory = (categoryId: number) => {
 			}
 			return data;
 		},
+		refetchOnWindowFocus: true,
 	});
 };
 
@@ -184,6 +217,34 @@ export const useInsertItem = () => {
 	});
 };
 
+export const useUpdateCategory = (id: number) => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		async mutationFn(data: UpdateTables<"categories">) {
+			const { error, data: updatedCategory } = await supabase
+				.from("categories")
+				.update({
+					name: data.name,
+					category_image: data.category_image,
+				})
+				.eq("id", id)
+				.select()
+				.single();
+
+			if (error) {
+				throw new Error(error.message);
+			}
+			return updatedCategory;
+		},
+		async onSuccess(_, { id }) {
+			await queryClient.invalidateQueries({ queryKey: ["categories"] });
+			await queryClient.invalidateQueries({ queryKey: ["types"] });
+			await queryClient.invalidateQueries({ queryKey: ["categories", id] });
+		},
+	});
+};
+
 export const useUpdateItem = () => {
 	const queryClient = useQueryClient();
 
@@ -224,6 +285,23 @@ export const useDeleteItem = () => {
 		},
 		async onSuccess() {
 			await queryClient.invalidateQueries({ queryKey: ["items"] });
+		},
+	});
+};
+
+export const useDeleteCategory = () => {
+	const queryClient = useQueryClient();
+
+	return useMutation({
+		async mutationFn(id: number) {
+			console.log("id", id);
+			const { error } = await supabase.from("categories").delete().eq("id", id);
+			if (error) {
+				throw new Error(error.message);
+			}
+		},
+		async onSuccess() {
+			await queryClient.invalidateQueries({ queryKey: ["categories"] });
 		},
 	});
 };

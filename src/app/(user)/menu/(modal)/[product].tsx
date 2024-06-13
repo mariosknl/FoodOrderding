@@ -3,8 +3,16 @@ import Button from "@/components/Button";
 import Colors from "@/constants/Colors";
 import { useBasketStore } from "@/store/basketStore";
 import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
+import {
+	Dimensions,
+	Image,
+	Pressable,
+	StyleSheet,
+	Text,
+	View,
+} from "react-native";
 import * as Haptics from "expo-haptics";
+import { Ionicons } from "@expo/vector-icons";
 
 const { width } = Dimensions.get("window");
 
@@ -14,7 +22,7 @@ const ProductDetailsScreen = () => {
 	const { addProduct } = useBasketStore();
 
 	// check if category is not a string
-	if (typeof category !== "string") return;
+	// if (typeof category !== "string") return;
 
 	if (!id || Array.isArray(id)) return;
 
@@ -37,7 +45,16 @@ const ProductDetailsScreen = () => {
 
 	return (
 		<View style={styles.container}>
-			<Stack.Screen options={{ headerTitle: category }} />
+			<Stack.Screen
+				options={{
+					headerTitle: category as string,
+					headerLeft: () => (
+						<Pressable onPress={() => navigation.goBack()}>
+							<Ionicons name="arrow-back" size={20} />
+						</Pressable>
+					),
+				}}
+			/>
 			<Image source={product.img} style={styles.image} />
 
 			<View style={styles.innerContainer}>

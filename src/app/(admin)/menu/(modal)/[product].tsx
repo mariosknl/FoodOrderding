@@ -22,7 +22,7 @@ const ProductDetailsScreen = () => {
 	const { addProduct } = useBasketStore();
 
 	// check if category is not a string
-	if (typeof category !== "string") return;
+	// if (typeof category !== "string") return;
 
 	if (!id || Array.isArray(id)) return;
 
@@ -43,11 +43,13 @@ const ProductDetailsScreen = () => {
 		addProduct(product);
 	};
 
+	console.log("here");
+
 	return (
 		<View style={styles.container}>
 			<Stack.Screen
 				options={{
-					headerTitle: category,
+					headerTitle: category as string,
 					headerRight: () => (
 						<Link href={`/(admin)/menu/create?id=${id}}`} asChild>
 							<Pressable>

@@ -1,14 +1,12 @@
-import { shopInfo } from "@assets/data/restaurant";
-import Button from "@/components/Button";
+import { useItemsList } from "@/api/products";
+import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
-import { useBasketStore } from "@store/basketStore";
+import { ItemType, Tables } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
-	ActivityIndicator,
 	Dimensions,
-	Image,
 	ListRenderItem,
 	Pressable,
 	SectionList,
@@ -22,19 +20,12 @@ import Animated, {
 	useAnimatedStyle,
 	useScrollViewOffset,
 } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useCategory, useItem, useItemsList, useTypes } from "@/api/products";
-import { supabase } from "@/lib/supabase";
-import { useEffect, useState } from "react";
-import { ItemType, Tables } from "@/types";
-import RemoteImage from "@/components/RemoteImage";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
 
 const CategoryPage = () => {
 	const { category, id } = useLocalSearchParams();
-	console.log(category, id);
 
 	if (!category || !id || typeof id !== "string") {
 		return null;
@@ -144,6 +135,19 @@ const CategoryPage = () => {
 						>
 							<Ionicons name="arrow-back" size={24} />
 						</Pressable>
+					),
+					headerRight: () => (
+						<Link
+							href={{
+								pathname: "(admin)/menu/createCategory",
+								params: { categoryId: id },
+							}}
+							asChild
+						>
+							<Pressable>
+								<Ionicons name="pencil" size={20} />
+							</Pressable>
+						</Link>
 					),
 					headerBackground: () => (
 						<Animated.View style={[styles.header, headerAnimatedStyle]} />
