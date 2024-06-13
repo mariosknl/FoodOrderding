@@ -1,3 +1,4 @@
+import { Tables } from "@/database.types";
 import { supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import {
@@ -7,6 +8,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import { useSessionStore } from "@/store/sessionStore";
 
 type AuthData = {
 	session: Session | null;
@@ -23,9 +25,12 @@ const AuthContext = createContext<AuthData>({
 });
 
 export default function AuthProvider({ children }: PropsWithChildren) {
-	const [session, setSession] = useState<Session | null>(null);
-	const [profile, setProfile] = useState(null);
+	// const [session, setSession] = useState<Session | null>(null);
+	const [profile, setProfile] = useState<Tables<"profiles"> | null>(null);
 	const [loading, setLoading] = useState(true);
+	const session = useSessionStore((state) => state.session);
+	const setSession = useSessionStore((state) => state.setSession);
+	const clearSession = useSessionStore((state) => state.clearSession);
 
 	useEffect(() => {
 		const fetchSession = async () => {

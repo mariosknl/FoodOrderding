@@ -1,13 +1,15 @@
 import Button from "@/components/Button";
 import CartListItem from "@/components/CartListItem";
 import { useBasketStore } from "@/store/basketStore";
+import { useSessionStore } from "@/store/sessionStore";
 import { useCart } from "@providers/CartProvider";
 import { StatusBar } from "expo-status-bar";
 import { FlatList, Platform, Text, View } from "react-native";
 const CartScreen = () => {
-	const { items, total, checkout } = useCart();
-	const { products } = useBasketStore();
-	console.log(products);
+	const { items, total } = useCart();
+	const { products, checkout } = useBasketStore();
+	const { session } = useSessionStore();
+	console.log("session", session?.user?.email);
 
 	return (
 		<View style={{ padding: 10 }}>

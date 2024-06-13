@@ -3,7 +3,7 @@ import { View, Text, Button } from "react-native";
 import { useAuth } from "../providers/AuthProvider";
 const ProfileScreen = () => {
 	const { session, profile } = useAuth();
-	console.log(profile);
+	console.log("profile", profile);
 	return (
 		<View>
 			<Text>ProfileScreen</Text>
