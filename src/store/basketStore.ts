@@ -7,6 +7,7 @@ export interface BasketStore {
 	removeProduct: (item: Product) => void;
 	updateProduct: (item: Product, quantity: number) => void;
 	clearCart: () => void;
+	checkout: () => void;
 	items: number;
 	total: number;
 }
@@ -60,4 +61,7 @@ export const useBasketStore = create<BasketStore>()((set) => ({
 		});
 	},
 	clearCart: () => set({ products: [], items: 0, total: 0 }),
+	checkout: () => {
+		// Implement your checkout logic here
+	},
 }));

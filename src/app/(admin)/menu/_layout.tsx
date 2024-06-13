@@ -1,6 +1,6 @@
 import Colors from "@constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
-import { Link, Stack } from "expo-router";
+import { Link, Stack, useSegments } from "expo-router";
 import { Pressable, View } from "react-native";
 
 export default function MenuStack() {
@@ -40,8 +40,8 @@ export default function MenuStack() {
 					),
 				}}
 			/>
-			<Stack.Screen name={`category/[category]`} options={{ title: "" }} />
-			<Stack.Screen name={`menu/(modal)/[product]`} />
+			<Stack.Screen name="category/[category]" options={{ title: "" }} />
+			<Stack.Screen name="(modal)/[product]" />
 		</Stack>
 	);
 }

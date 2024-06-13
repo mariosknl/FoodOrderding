@@ -39,7 +39,7 @@ const Categories = () => {
 					key={id}
 					href={{
 						pathname: `/${segments[0]}/menu/category/${name}`,
-						params: { id },
+						params: { id, category_image },
 					}}
 				>
 					<View style={styles.categoryCard}>

@@ -1,15 +1,18 @@
 import Button from "@/components/Button";
 import CartListItem from "@/components/CartListItem";
+import { useBasketStore } from "@/store/basketStore";
 import { useCart } from "@providers/CartProvider";
 import { StatusBar } from "expo-status-bar";
 import { FlatList, Platform, Text, View } from "react-native";
 const CartScreen = () => {
 	const { items, total, checkout } = useCart();
+	const { products } = useBasketStore();
+	console.log(products);
 
 	return (
 		<View style={{ padding: 10 }}>
 			<FlatList
-				data={items}
+				data={products}
 				renderItem={({ item }) => <CartListItem cartItem={item} />}
 				contentContainerStyle={{ gap: 10 }}
 			/>

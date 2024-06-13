@@ -99,7 +99,7 @@ const CategoryPage = () => {
 	const renderItem: ListRenderItem<any> = ({ item, index }) => (
 		<Link
 			href={{
-				pathname: "(admin)/menu/(modal)/[product]",
+				pathname: `(admin)/menu/(modal)/[product]`,
 				params: { id: item.id, category: category as string },
 			}}
 			asChild
@@ -157,7 +157,7 @@ const CategoryPage = () => {
 			<Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
 				<Animated.Image
 					source={
-						(items && items[0]?.types?.categories?.category_image) ||
+						(items && items?.[0]?.types?.categories?.category_image) ||
 						require("@assets/images/defaultΙmage.png")
 					}
 					style={[styles.image, imageAnimatedStyle]}

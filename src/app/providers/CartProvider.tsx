@@ -7,7 +7,7 @@ import { useRouter } from "expo-router";
 import { useInsertOrderItems } from "@/api/order-item";
 import { initializePaymentSheet, openPaymentSheet } from "@/lib/stripe";
 
-type Product = Tables<"products">;
+type Product = Tables<"items">;
 
 type CartType = {
 	items: CartItem[];

@@ -1,18 +1,13 @@
-import { shopInfo } from "@assets/data/restaurant";
+import { useItem } from "@/api/products";
 import Button from "@/components/Button";
+import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
 import { useBasketStore } from "@/store/basketStore";
-import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
-import {
-	Dimensions,
-	Image,
-	Pressable,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
-import * as Haptics from "expo-haptics";
+import { Product } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
+import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
 const { width } = Dimensions.get("window");
 
@@ -21,26 +16,17 @@ const ProductDetailsScreen = () => {
 	const navigation = useNavigation();
 	const { addProduct } = useBasketStore();
 
-	// check if category is not a string
-	// if (typeof category !== "string") return;
-
 	if (!id || Array.isArray(id)) return;
 
-	const getProductById = (productId: string) => {
-		const allItems = shopInfo.products.flatMap((category) =>
-			category.types.flatMap((type) => type.items)
-		);
-		return allItems.find((item) => item.id === productId) || null;
-	};
-
-	const product = getProductById(id);
+	const { data: product } = useItem(parseFloat(id));
+	console.log("product", id, category);
 
 	if (!product) return;
 
 	const addToCart = () => {
 		Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 		navigation.goBack();
-		addProduct(product);
+		addProduct(product as Product);
 	};
 
 	return (
@@ -55,11 +41,16 @@ const ProductDetailsScreen = () => {
 					),
 				}}
 			/>
-			<Image source={product.img} style={styles.image} />
+			<RemoteImage
+				path={product.img}
+				style={styles.image}
+				fallback="@assets/images/defaultΙmage.png"
+			/>
 
 			<View style={styles.innerContainer}>
 				<Text style={styles.title}>{product.name}</Text>
 				<Text style={styles.price}>€{product.price}</Text>
+				<Text style={styles.info}>€{product.info}</Text>
 
 				<Button text="Add to Cart" onPress={addToCart} />
 			</View>
@@ -77,6 +68,7 @@ const styles = StyleSheet.create({
 	},
 	image: {
 		width,
+		aspectRatio: 1,
 	},
 	title: {
 		fontSize: 18,
@@ -87,5 +79,9 @@ const styles = StyleSheet.create({
 		color: Colors.primary,
 		fontWeight: "bold",
 		marginTop: "auto",
+	},
+	info: {
+		color: Colors.black,
+		fontSize: 16,
 	},
 });
