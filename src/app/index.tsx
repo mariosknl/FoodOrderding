@@ -8,7 +8,6 @@ import { useStore } from "@/store/store";
 
 const Index = () => {
 	const { session, loading, profile } = useStore();
-	console.log("profile", profile);
 
 	if (loading) {
 		return <ActivityIndicator />;

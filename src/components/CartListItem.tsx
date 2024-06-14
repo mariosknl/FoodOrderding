@@ -8,17 +8,16 @@ import { useCart } from "@providers/CartProvider";
 import { defaultPizzaImage } from "./ProductListItem";
 import RemoteImage from "./RemoteImage";
 import { Tables } from "@/database.types";
+import { useBasketStore } from "@/store/basketStore";
 
 type CartListItemProps = {
 	cartItem: (Product & { quantity: number }) | null;
 };
 
 const CartListItem = ({ cartItem }: CartListItemProps) => {
-	const { updateQuantity } = useCart();
+	const { updateProduct } = useBasketStore();
 
 	if (!cartItem) return null;
-
-	console.log("cartItem", cartItem);
 
 	return (
 		<View style={styles.container}>
@@ -36,7 +35,7 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
 			</View>
 			<View style={styles.quantitySelector}>
 				<FontAwesome
-					onPress={() => updateQuantity(cartItem.id.toString(), -1)}
+					onPress={() => updateProduct(cartItem, -1)}
 					name="minus"
 					color="gray"
 					style={{ padding: 5 }}
@@ -44,7 +43,7 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
 
 				<Text style={styles.quantity}>{cartItem?.quantity}</Text>
 				<FontAwesome
-					onPress={() => updateQuantity(cartItem?.id.toString(), 1)}
+					onPress={() => updateProduct(cartItem, 1)}
 					name="plus"
 					color="gray"
 					style={{ padding: 5 }}

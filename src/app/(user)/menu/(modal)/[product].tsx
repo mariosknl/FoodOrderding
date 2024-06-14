@@ -19,7 +19,6 @@ const ProductDetailsScreen = () => {
 	if (!id || Array.isArray(id)) return;
 
 	const { data: product } = useItem(parseFloat(id));
-	console.log("product", id, category);
 
 	if (!product) return;
 

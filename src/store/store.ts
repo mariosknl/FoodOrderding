@@ -39,7 +39,6 @@ export const useStore = create<State>((set) => ({
 				.eq("id", session.user.id)
 				.single();
 			set(() => ({ profile: data || null }));
-			console.log("data", data);
 		}
 
 		set(() => ({ loading: false }));

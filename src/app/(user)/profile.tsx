@@ -2,7 +2,6 @@ import { useProfile } from "@/api/profile";
 import Button from "@/components/Button";
 import Colors from "@/constants/Colors";
 import { supabase } from "@/lib/supabase";
-import { useSessionStore } from "@/store/sessionStore";
 import { useStore } from "@/store/store";
 import { StyleSheet, Text, View } from "react-native";
 const ProfileScreen = () => {

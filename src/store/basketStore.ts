@@ -1,8 +1,11 @@
-import { Product } from "@/types";
-import { create } from "zustand";
+import { btoa } from "react-native-quick-base64";
 
-const clientId = process.env.VIVA_CLIENT_ID;
-const clientSecret = process.env.VIVA_CLIENT_SECRET;
+import { Product } from "@/types";
+import { EXPO_VIVA_CLIENT_ID, EXPO_VIVA_CLIENT_SECRET } from "@env";
+import { create } from "zustand";
+import { useStore } from "./store";
+
+const TOKEN = btoa(`${EXPO_VIVA_CLIENT_ID}:${EXPO_VIVA_CLIENT_SECRET}`);
 
 type State = {
 	products: Array<Product & { quantity: number }>;
@@ -22,7 +25,7 @@ export interface BasketStore {
 	removeProduct: (item: Product) => void;
 	updateProduct: (item: Product, quantity: number) => void;
 	clearCart: () => void;
-	checkout: (get: GetState) => Promise<void>;
+	checkout: () => Promise<void>;
 	items: number;
 	total: number;
 }
@@ -36,6 +39,7 @@ export const useBasketStore = create<BasketStore>()(
 			set((state) => {
 				state.items += 1;
 				state.total += product.price;
+
 				const hasProduct = state.products.find(
 					(item) => item.id === product.id
 				);
@@ -81,28 +85,69 @@ export const useBasketStore = create<BasketStore>()(
 		clearCart: () => set({ products: [], items: 0, total: 0 }),
 		checkout: async () => {
 			const state = get();
-			const response = await fetch(
-				"https://demo-api.vivapayments.com/connect/token",
+			const storeState = useStore.getState();
+
+			// Step 1: Obtain an access token
+			const tokenResponse = await fetch(
+				"https://demo-accounts.vivapayments.com/connect/token",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/x-www-form-urlencoded",
+						Authorization: "Basic " + TOKEN,
+					},
+					body: new URLSearchParams({
+						grant_type: "client_credentials",
+					}).toString(),
+				}
+			);
+			console.log(tokenResponse);
+
+			if (!tokenResponse.ok) {
+				const responseBody = await tokenResponse.text();
+				console.error(
+					`HTTP error! status: ${tokenResponse.status}, body: ${responseBody}`
+				);
+				throw new Error(`HTTP error! status: ${tokenResponse.status}`);
+			}
+
+			const { access_token } = await tokenResponse.json();
+
+			console.log("state.total", state.total * 100);
+
+			// Step 2: Create a payment order using the access token from above
+			const orderResponse = await fetch(
+				"https://demo-api.vivapayments.com/checkout/v2/orders",
 				{
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
-						Authorization:
-							"Basic " +
-							Buffer.from(`${clientId}:${clientSecret}`).toString("base64"),
+						Authorization: `Bearer ${access_token}`,
 					},
 					body: JSON.stringify({
-						amount: state.total,
+						amount: state.total * 100,
+						customer: {
+							email: storeState?.session?.user?.email,
+							fullName: storeState?.profile?.full_name,
+							phone: storeState?.profile?.phone,
+						},
+						currencyCode: 978,
+						paymentNotification: true,
 					}),
 				}
 			);
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
+			if (!orderResponse.ok) {
+				const responseBody = await orderResponse.text();
+				console.error(
+					`HTTP error! status: ${orderResponse.status}, body: ${responseBody}`
+				);
+				throw new Error(`HTTP error! status: ${orderResponse.status}`);
 			}
 
-			const data = await response.json();
-			console.log(data);
+			const { orderCode } = await orderResponse.json();
+
+			return orderCode;
 		},
 	})
 );
