@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@providers/AuthProvider";
 import { InsertTables, Tables, UpdateTables } from "@/types";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useStore } from "@/store/store";
 
 export const useAdminOrdersList = ({ archived = false }) => {
 	const statuses = archived ? ["Delivered"] : ["New", "Cooking", "Delivering"];
@@ -23,7 +23,7 @@ export const useAdminOrdersList = ({ archived = false }) => {
 };
 
 export const useMyOrderList = () => {
-	const { session } = useAuth();
+	const { session } = useStore();
 	const id = session?.user.id;
 
 	return useQuery({
@@ -63,7 +63,7 @@ export const useOrderDetails = (id: number) => {
 
 export const useInsertOrder = () => {
 	const queryClient = useQueryClient();
-	const { session } = useAuth();
+	const { session } = useStore();
 	const userId = session?.user.id;
 
 	return useMutation({

@@ -4,7 +4,7 @@ import React from "react";
 
 import { useClientOnlyValue } from "@components/useClientOnlyValue";
 import Colors from "@constants/Colors";
-import { useAuth } from "../providers/AuthProvider";
+import { useStore } from "@/store/store";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
 function TabBarIcon(props: {
@@ -15,9 +15,9 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
-	const { isAdmin } = useAuth();
+	const { profile } = useStore();
 
-	if (!isAdmin) {
+	if (profile?.group !== "ADMIN") {
 		return <Redirect href={"/"} />;
 	}
 

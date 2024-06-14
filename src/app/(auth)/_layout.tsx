@@ -1,8 +1,8 @@
+import { useStore } from "@/store/store";
 import { Redirect, Stack } from "expo-router";
-import { useAuth } from "../providers/AuthProvider";
 
 export default function AuthLayout() {
-	const { session } = useAuth();
+	const { session } = useStore();
 
 	if (session) {
 		return <Redirect href={"/"} />;

@@ -2,11 +2,13 @@ import { View, Text, ActivityIndicator } from "react-native";
 import React from "react";
 import Button from "../components/Button";
 import { Link, Redirect } from "expo-router";
-import { useAuth } from "./providers/AuthProvider";
-import { supabase } from "@/lib/supabase";
 
-const index = () => {
-	const { session, loading, isAdmin } = useAuth();
+import { supabase } from "@/lib/supabase";
+import { useStore } from "@/store/store";
+
+const Index = () => {
+	const { session, loading, profile } = useStore();
+	console.log("profile", profile);
 
 	if (loading) {
 		return <ActivityIndicator />;
@@ -16,7 +18,7 @@ const index = () => {
 		return <Redirect href={"/sign-in"} />;
 	}
 
-	if (!isAdmin) {
+	if (profile?.group !== "ADMIN") {
 		return <Redirect href={"/(user)"} />;
 	}
 
@@ -34,4 +36,4 @@ const index = () => {
 	);
 };
 
-export default index;
+export default Index;
