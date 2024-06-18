@@ -83,3 +83,7 @@ export type Profile = {
 	id: string;
 	group: string;
 };
+
+export type Navigation = {
+	navigate: (screen: string, params: { orderCode: string }) => void;
+};

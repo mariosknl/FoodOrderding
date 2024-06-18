@@ -10,8 +10,9 @@ export default function MenuStack() {
 	return (
 		<Stack
 			screenOptions={{
+				headerTitle: "",
 				headerRight: () => (
-					<Link href="/cart" asChild>
+					<Link href="menu/cart" asChild>
 						<Pressable>
 							{({ pressed }) => (
 								<View>
@@ -36,6 +37,8 @@ export default function MenuStack() {
 			{/* <Stack.Screen name="index" options={{ title: "" }} /> */}
 			<Stack.Screen name={`category/[category]`} options={{ title: "" }} />
 			<Stack.Screen name={`(modal)/[product]`} />
+			<Stack.Screen name="cart" />
+			<Stack.Screen name="checkoutScreen" />
 		</Stack>
 	);
 }

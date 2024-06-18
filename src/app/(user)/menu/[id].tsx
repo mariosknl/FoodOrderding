@@ -34,7 +34,7 @@ const ProductDetailsScreen = () => {
 		if (!product) return;
 
 		addProduct(product);
-		router.push("/cart");
+		router.push("cart");
 	};
 
 	if (isLoading) {

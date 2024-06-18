@@ -25,7 +25,7 @@ export interface BasketStore {
 	removeProduct: (item: Product) => void;
 	updateProduct: (item: Product, quantity: number) => void;
 	clearCart: () => void;
-	checkout: () => Promise<void>;
+	checkout: () => Promise<string>;
 	items: number;
 	total: number;
 }

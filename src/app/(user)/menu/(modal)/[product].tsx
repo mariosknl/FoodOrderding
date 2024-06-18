@@ -49,7 +49,7 @@ const ProductDetailsScreen = () => {
 			<View style={styles.innerContainer}>
 				<Text style={styles.title}>{product.name}</Text>
 				<Text style={styles.price}>€{product.price}</Text>
-				<Text style={styles.info}>€{product.info}</Text>
+				<Text style={styles.info}>{product.info}</Text>
 
 				<Button text="Add to Cart" onPress={addToCart} />
 			</View>
