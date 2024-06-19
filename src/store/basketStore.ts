@@ -1,7 +1,7 @@
 import { btoa } from "react-native-quick-base64";
 
 import { Product } from "@/types";
-import { EXPO_VIVA_CLIENT_ID, EXPO_VIVA_CLIENT_SECRET } from "@env";
+import { EXPO_VIVA_CLIENT_ID, EXPO_VIVA_CLIENT_SECRET } from "@/secrets";
 import { create } from "zustand";
 import { useStore } from "./store";
 
@@ -112,8 +112,6 @@ export const useBasketStore = create<BasketStore>()(
 			}
 
 			const { access_token } = await tokenResponse.json();
-
-			console.log("state.total", state.total * 100);
 
 			// Step 2: Create a payment order using the access token from above
 			const orderResponse = await fetch(

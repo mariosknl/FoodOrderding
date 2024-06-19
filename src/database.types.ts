@@ -69,7 +69,6 @@ export type Database = {
           order_id: number
           product_id: number
           quantity: number
-          size: string
         }
         Insert: {
           created_at?: string
@@ -77,7 +76,6 @@ export type Database = {
           order_id: number
           product_id: number
           quantity?: number
-          size?: string
         }
         Update: {
           created_at?: string
@@ -85,9 +83,15 @@ export type Database = {
           order_id?: number
           product_id?: number
           quantity?: number
-          size?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "public_order_items_order_id_fkey"
             columns: ["order_id"]

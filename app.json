@@ -5,7 +5,6 @@
 		"version": "1.0.0",
 		"orientation": "portrait",
 		"icon": "./assets/images/icon.png",
-		"entryPoint": ".src/app/_layout.tsx",
 		"scheme": "myapp",
 		"userInterfaceStyle": "automatic",
 		"splash": {
@@ -40,6 +39,7 @@
 			"eas": {
 				"projectId": "1db845f1-8164-443b-8c62-8b1a50e59492"
 			}
-		}
+		},
+		"main": "./src/app/_layout.tsx"
 	}
 }
