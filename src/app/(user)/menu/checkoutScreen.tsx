@@ -1,10 +1,27 @@
-import { WebView } from "react-native-webview";
+import { WebView, WebViewNavigation } from "react-native-webview";
 import Constants from "expo-constants";
 import { StyleSheet } from "react-native";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation } from "expo-router";
 
 export default function CheckoutScreen() {
-	const { orderCode } = useLocalSearchParams();
+	const { orderCode, accessToken } = useLocalSearchParams();
+	const navigation = useNavigation();
+
+	const handleNavigationStateChange = (navState: WebViewNavigation) => {
+		const targetUrl = "http://demo.vivapayments.com/web/checkout/result";
+		if (navState.url.startsWith(targetUrl)) {
+			// Redirect to the success screen
+			const urlParams = new URLSearchParams(navState.url.split("?")[1]);
+			const transactionId = urlParams.get("t");
+			console.log("Transaction ID:", transactionId);
+
+			(navigation.navigate as any)("successScreen", {
+				transactionId,
+				accessToken,
+			});
+		}
+	};
+
 	return (
 		<>
 			<Stack.Screen options={{}} />
@@ -13,6 +30,7 @@ export default function CheckoutScreen() {
 				source={{
 					uri: `https://demo.vivapayments.com/web/checkout?ref=${orderCode}`,
 				}}
+				onNavigationStateChange={handleNavigationStateChange}
 			/>
 		</>
 	);

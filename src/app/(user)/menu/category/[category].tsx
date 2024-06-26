@@ -37,7 +37,6 @@ const CategoryPage = () => {
 		return null;
 	}
 	const { data: items, error, isPending } = useItemsList(parseFloat(id));
-	console.log("items", items?.[0]?.types?.categories?.category_image);
 
 	const scrollRef = useAnimatedRef<Animated.ScrollView>();
 	const scrollOffset = useScrollViewOffset(scrollRef);

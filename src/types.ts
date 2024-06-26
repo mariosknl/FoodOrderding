@@ -85,5 +85,8 @@ export type Profile = {
 };
 
 export type Navigation = {
-	navigate: (screen: string, params: { orderCode: string }) => void;
+	navigate: (
+		screen: string,
+		params: { orderCode: string; accessToken: string }
+	) => void;
 };

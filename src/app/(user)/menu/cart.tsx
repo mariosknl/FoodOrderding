@@ -8,8 +8,20 @@ import { Stack, useNavigation, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Alert, FlatList, Platform, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
+type RootStackParamList = {
+	checkoutScreen: {
+		orderCode: string;
+		accessToken: string;
+	};
+	successScreen: {
+		transactionId: string | null;
+		accessToken: string;
+	};
+};
+
 const CartScreen = () => {
-	const { items, total } = useBasketStore();
+	const { total } = useBasketStore();
 	const { products, checkout } = useBasketStore();
 	const { profile } = useStore();
 	const router = useRouter();
@@ -29,8 +41,8 @@ const CartScreen = () => {
 				{ cancelable: false }
 			);
 		} else {
-			const orderCode = await checkout();
-			navigation.navigate("checkoutScreen", { orderCode });
+			const { orderCode, accessToken } = await checkout();
+			navigation.navigate("checkoutScreen", { orderCode, accessToken });
 		}
 	};
 

@@ -25,9 +25,14 @@ export interface BasketStore {
 	removeProduct: (item: Product) => void;
 	updateProduct: (item: Product, quantity: number) => void;
 	clearCart: () => void;
-	checkout: () => Promise<string>;
+	checkout: () => Promise<CheckoutResponse>;
 	items: number;
 	total: number;
+}
+
+export interface CheckoutResponse {
+	orderCode: string;
+	accessToken: string;
 }
 
 export const useBasketStore = create<BasketStore>()(
@@ -101,7 +106,6 @@ export const useBasketStore = create<BasketStore>()(
 					}).toString(),
 				}
 			);
-			console.log(tokenResponse);
 
 			if (!tokenResponse.ok) {
 				const responseBody = await tokenResponse.text();
@@ -145,7 +149,7 @@ export const useBasketStore = create<BasketStore>()(
 
 			const { orderCode } = await orderResponse.json();
 
-			return orderCode;
+			return { orderCode, accessToken: access_token };
 		},
 	})
 );

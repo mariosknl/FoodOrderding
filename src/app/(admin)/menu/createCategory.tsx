@@ -64,7 +64,6 @@ const CreateCategoryScreen = () => {
 	const { mutate: deleteCategory } = useDeleteCategory();
 
 	const router = useRouter();
-	console.log("updatingCategory", updatingCategory);
 
 	useEffect(() => {
 		if (updatingCategory && isUpdating) {
