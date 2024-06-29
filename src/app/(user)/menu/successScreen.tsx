@@ -1,4 +1,8 @@
-import { useLocalSearchParams } from "expo-router";
+import { useInsertOrderItems } from "@/api/order-item";
+import { useInsertOrder } from "@/api/orders";
+import { Tables } from "@/database.types";
+import { useBasketStore } from "@/store/basketStore";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Text, View } from "react-native";
 
@@ -41,8 +45,11 @@ async function verifyPayment(
 
 const SuccessScreen = () => {
 	const { transactionId, accessToken } = useLocalSearchParams();
-
 	const [paymentStatus, setPaymentStatus] = useState("");
+	const { mutate: insertOrder } = useInsertOrder();
+	const { mutate: insertOrderItems } = useInsertOrderItems();
+	const { products, total, clearCart } = useBasketStore();
+	const router = useRouter();
 
 	if (
 		transactionId === undefined ||
@@ -52,11 +59,33 @@ const SuccessScreen = () => {
 	)
 		return;
 
+	const saveOrderItems = (order: Tables<"orders">) => {
+		const orderItems = products.map((cartItem) => ({
+			order_id: order.id,
+			product_id: cartItem.id as number,
+			quantity: cartItem.quantity,
+		}));
+
+		insertOrderItems(orderItems, {
+			onSuccess: () => {
+				clearCart();
+				router.push(`/(user)/orders/${order.id}`);
+			},
+		});
+	};
+
 	useEffect(() => {
 		verifyPayment(transactionId, accessToken).then((data) => {
-			console.log("data from verifyPayment call", data);
 			if (data.statusId === "F") {
 				setPaymentStatus("success");
+
+				// Insert the order into the database
+				insertOrder(
+					{ total },
+					{
+						onSuccess: saveOrderItems,
+					}
+				);
 			} else {
 				setPaymentStatus("failed");
 			}

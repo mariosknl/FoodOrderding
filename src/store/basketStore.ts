@@ -1,7 +1,7 @@
 import { btoa } from "react-native-quick-base64";
 
-import { Product } from "@/types";
 import { EXPO_VIVA_CLIENT_ID, EXPO_VIVA_CLIENT_SECRET } from "@/secrets";
+import { Product } from "@/types";
 import { create } from "zustand";
 import { useStore } from "./store";
 

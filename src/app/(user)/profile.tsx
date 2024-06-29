@@ -9,8 +9,6 @@ const ProfileScreen = () => {
 
 	const { data: profile } = useProfile(session?.user?.id!);
 
-	console.log("first profile", session);
-
 	const handleLogout = async () => {
 		clearSession();
 		await supabase.auth.signOut();

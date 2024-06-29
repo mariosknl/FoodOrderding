@@ -7,7 +7,9 @@ import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 export default function OrderDetailsScreen() {
 	const { id: idString } = useLocalSearchParams();
-	const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+	const id = parseFloat(
+		typeof idString === "string" ? idString : idString ? idString[0] : "0"
+	);
 
 	const { data: order, error, isLoading } = useOrderDetails(id);
 	useUpdateOrderSubscription(id);
@@ -36,9 +38,8 @@ export default function OrderDetailsScreen() {
 
 			<FlatList
 				data={order.order_items}
-				renderItem={({ item }) => <OrderItemListItem item={item} />}
+				renderItem={({ item }) => item && <OrderItemListItem item={item} />}
 				contentContainerStyle={{ gap: 10 }}
-				// ListHeaderComponent={() => <OrderListItem order={order} />}
 			/>
 		</View>
 	);

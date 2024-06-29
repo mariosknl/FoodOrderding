@@ -13,7 +13,6 @@ export default function CheckoutScreen() {
 			// Redirect to the success screen
 			const urlParams = new URLSearchParams(navState.url.split("?")[1]);
 			const transactionId = urlParams.get("t");
-			console.log("Transaction ID:", transactionId);
 
 			(navigation.navigate as any)("successScreen", {
 				transactionId,
