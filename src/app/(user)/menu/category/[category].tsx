@@ -1,13 +1,13 @@
-import { shopInfo } from "@assets/data/restaurant";
-import Button from "@/components/Button";
+import { useItemsList } from "@/api/products";
+import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
-import { useBasketStore } from "@store/basketStore";
+import { Tables } from "@/database.types";
+import { ItemType } from "@/types";
 import { Ionicons } from "@expo/vector-icons";
 import { Link, Stack, useLocalSearchParams, useNavigation } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import {
 	Dimensions,
-	Image,
 	ListRenderItem,
 	Pressable,
 	SectionList,
@@ -21,26 +21,42 @@ import Animated, {
 	useAnimatedStyle,
 	useScrollViewOffset,
 } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useItemsList } from "@/api/products";
-import { ItemType } from "@/types";
-import { Tables } from "@/database.types";
-import RemoteImage from "@/components/RemoteImage";
 
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
 
+/**
+ * The `CategoryPage` component is designed to display a list of items belonging to a specific category
+ * in a food ordering app. It utilizes the `useItemsList` hook to fetch items based on the category ID
+ * obtained from the URL search parameters. This component showcases the items using a `SectionList`,
+ * allowing for efficient display and scrolling of potentially large lists of items.
+ *
+ * The component also features an animated header image that reacts to the user's scroll. This animation
+ * is achieved using `react-native-reanimated` to interpolate the scroll offset and adjust the image's
+ * translateY property, creating a parallax effect.
+ *
+ * Key functionalities include:
+ * - Fetching category-specific items using the category ID from URL search parameters.
+ * - Handling cases where the category or ID is not specified or invalid.
+ * - Displaying items in a sectioned list, where each item is clickable and navigates to its detailed view.
+ * - Implementing a custom animated effect for the header image based on the user's scroll position.
+ *
+ * Usage of `expo-router` for navigation and parameter handling, along with `react-native-reanimated` for
+ * smooth animations, demonstrates a modern approach to creating interactive and visually appealing mobile
+ * applications with React Native.
+ *
+ * @returns A React component that renders a list of items for a specific category with an animated header.
+ */
 const CategoryPage = () => {
 	const { category, id } = useLocalSearchParams();
+	const scrollRef = useAnimatedRef<Animated.ScrollView>();
+	const scrollOffset = useScrollViewOffset(scrollRef);
+	const navigation = useNavigation();
 
 	if (!category || !id || typeof id !== "string") {
 		return null;
 	}
-	const { data: items, error, isPending } = useItemsList(parseFloat(id));
-
-	const scrollRef = useAnimatedRef<Animated.ScrollView>();
-	const scrollOffset = useScrollViewOffset(scrollRef);
-	const navigation = useNavigation();
+	const { data: items } = useItemsList(parseFloat(id));
 
 	const imageAnimatedStyle = useAnimatedStyle(() => {
 		return {

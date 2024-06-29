@@ -12,6 +12,15 @@ type OrderListItemProps = {
 	order: Tables<"orders">;
 };
 
+/**
+ * Renders a list item for an order, displaying its ID, creation time, and status.
+ *
+ * This component creates a pressable list item for an order. It displays the order's ID and status, as well as how long ago the order was created using `dayjs`. The entire list item is wrapped in a `Link` component, making it navigable to a detailed view of the order. The destination URL is dynamically constructed using the first segment from `useSegments` and the order's ID.
+ *
+ * @param {Object} props - Component props.
+ * @param {OrderListItemProps} props.order - The order data to display, including its ID, creation time, and status.
+ * @returns {React.ReactElement} A pressable, navigable list item displaying brief details of an order.
+ */
 const OrderListItem = ({ order }: OrderListItemProps) => {
 	const segments = useSegments();
 

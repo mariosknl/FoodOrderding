@@ -9,6 +9,17 @@ type OrderItemListItemProps = {
 	item: { items: Tables<"items"> | null } & Tables<"order_items">;
 };
 
+/**
+ * Renders a single item within an order list.
+ *
+ * This component displays the item's image, name, and price, along with the quantity of the item ordered.
+ * It uses a `RemoteImage` component to load the item's image, providing a fallback image if the main image fails to load.
+ * The item's name and price are displayed next to the image, and the quantity is shown on the right side of the item.
+ *
+ * @param {Object} props - Component props.
+ * @param {OrderItemListItemProps} props.item - The order item to display. Contains information like the image path, name, price, and quantity.
+ * @returns {React.ReactElement} The order item list item component.
+ */
 const OrderItemListItem = ({ item }: OrderItemListItemProps) => {
 	return (
 		<View style={styles.container}>

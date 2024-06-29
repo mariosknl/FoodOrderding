@@ -1,34 +1,33 @@
 import { useItem } from "@/api/products";
-import { useCart } from "@/app/providers/CartProvider";
 import Button from "@/components/Button";
 import { defaultPizzaImage } from "@/components/ProductListItem";
 import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
 import { useBasketStore } from "@/store/basketStore";
-import { PizzaSize } from "@/types";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
-import {
-	ActivityIndicator,
-	Image,
-	Pressable,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 
+/**
+ * `ProductDetailsScreen` is a React component that displays detailed information about a specific product.
+ * It fetches product details based on the `id` provided in the URL path parameters.
+ * This screen includes information such as the product name, description, price, and images.
+ * Users can also add the product to their cart from this screen.
+ *
+ * The component makes use of the `useProductDetails` hook to fetch the product's details
+ * and handles loading and error states accordingly.
+ *
+ * @returns A React component that renders the detailed view of a product, including
+ * name, description, price, and images, with an option to add the product to the cart.
+ */
 const ProductDetailsScreen = () => {
 	const { id: idString } = useLocalSearchParams();
+	const router = useRouter();
+	const { addProduct } = useBasketStore();
 
 	if (!idString) return null;
 	const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
 	const { data: product, error, isLoading } = useItem(id);
-	const { addProduct, products } = useBasketStore();
-
-	const router = useRouter();
-
-	const [selectedSize, setSelectedSize] = useState<PizzaSize>("M");
 
 	const addToCart = () => {
 		if (!product) return;

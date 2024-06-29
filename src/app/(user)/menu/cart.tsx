@@ -3,7 +3,6 @@ import CartListItem from "@/components/CartListItem";
 import { useBasketStore } from "@/store/basketStore";
 import { useStore } from "@/store/store";
 import { Navigation } from "@/types";
-import { useCart } from "@providers/CartProvider";
 import { Stack, useNavigation, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Alert, FlatList, Platform, Text, View } from "react-native";

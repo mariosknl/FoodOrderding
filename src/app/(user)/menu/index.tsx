@@ -16,6 +16,19 @@ import TopOffers from "@/components/TopOffers";
 
 const { width, height } = Dimensions.get("window");
 
+/**
+ * `MenuScreen` is a React component that displays a list of available food items for ordering.
+ * It fetches the menu items from an API and presents them in a list format, categorized by type
+ * (e.g., appetizers, mains, desserts). Users can browse through the menu, view details of each item,
+ * and add items to their cart.
+ *
+ * This screen also provides functionality for searching through the menu items by name and filtering
+ * by category. The component handles loading, error states, and empty states (when no items match the
+ * search or filter criteria).
+ *
+ * @returns A React component that renders the restaurant's menu, allowing users to browse,
+ * search, and filter menu items, view item details, and add items to their cart.
+ */
 export default function MenuScreen() {
 	return (
 		<SafeAreaView style={styles.container}>

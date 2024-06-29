@@ -12,6 +12,17 @@ Notifications.setNotificationHandler({
 	}),
 });
 
+/**
+ * Provides a context for managing push notifications within the app.
+ *
+ * This component sets up a notification handler to control the behavior of incoming push notifications,
+ * registers for push notifications to obtain a token, and listens for both notification receipts and responses.
+ * It also updates the user's profile with the new push token for notifications.
+ *
+ * @component
+ * @param {PropsWithChildren} props - The props object, expecting children nodes to render within the NotificationProvider context.
+ * @returns {React.ReactElement} The children wrapped within the NotificationProvider context.
+ */
 const NotificationProvider = ({ children }: PropsWithChildren) => {
 	const [expoPushToken, setExpoPushToken] = useState("");
 	const [notification, setNotification] = useState<

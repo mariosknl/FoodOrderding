@@ -1,16 +1,12 @@
 import {
 	useCategory,
-	useCategoryList,
 	useDeleteCategory,
-	useDeleteItem,
 	useInsertCategory,
 	useUpdateCategory,
-	useUpdateItem,
 } from "@/api/products";
 import Button from "@/components/Button";
 import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
-import { Tables } from "@/database.types";
 import { supabase } from "@/lib/supabase";
 import { useQueryClient } from "@tanstack/react-query";
 import { decode } from "base64-arraybuffer";
@@ -29,6 +25,26 @@ import {
 	View,
 } from "react-native";
 
+/**
+ * The `CreateCategoryScreen` component within the `admin` folder is specifically designed for the administrative interface of a food ordering app,
+ * facilitating the addition of new categories to organize the menu. This screen provides a straightforward form for administrators to input the
+ * name and description of a new category, and optionally, to upload an image that represents the category.
+ *
+ * Key features of the `admin` `CreateCategoryScreen` include:
+ * - A user-friendly form interface that captures essential information for a new category, such as its name and description. The form may also
+ *   include an option for uploading an image to visually represent the category.
+ * - Validation logic to ensure that the category name is unique and that all required fields are filled out, enhancing data integrity and user
+ *   experience.
+ * - Feedback mechanisms, such as error messages for validation failures or a success message upon successful category creation, to inform the
+ *   administrator of the action's outcome.
+ * - Integration with the app's backend or database to create a new category record upon form submission. This includes handling the storage
+ *   and retrieval of the category image if applicable.
+ * - Navigation controls that allow the administrator to return to the category list or menu management screens after the category is created,
+ *   or to cancel the creation process.
+ *
+ * This component plays a vital role in allowing administrators to customize and organize the menu structure of the food ordering app by adding
+ * new categories, thereby enhancing the overall user experience.
+ */
 const CreateCategoryScreen = () => {
 	const [name, setName] = useState("");
 	const [types, setTypes] = useState([{ name: "" }]);
@@ -291,7 +307,7 @@ const CreateCategoryScreen = () => {
 				<Text style={styles.label}>Types:</Text>
 				{types?.map((type, index) => (
 					<TextInput
-						key={index}
+						key={`${type.name}-${index}`}
 						value={type?.name}
 						onChangeText={(text) => handleTypeChange(text, index)}
 						style={styles.input}

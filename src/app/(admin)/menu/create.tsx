@@ -26,6 +26,27 @@ import { supabase } from "@/lib/supabase";
 import { decode } from "base64-arraybuffer";
 import { Dropdown } from "react-native-element-dropdown";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
+
+/**
+ * The `CreateProductScreen` component within the `admin` folder is designed for the administrative interface of a food ordering app,
+ * enabling administrators to add new products to the menu. This screen provides a comprehensive form for entering product details such
+ * as name, description, price, category, and availability, along with the capability to upload images.
+ *
+ * Key functionalities of the `admin` `CreateProductScreen` include:
+ * - A form interface that collects essential product information. This includes text inputs for the product name and description,
+ *   a numeric input for price, dropdowns or selectors for category assignment, toggles for availability, and image upload capabilities.
+ * - Validation mechanisms to ensure that all required fields are filled out correctly and that the entered data meets specific criteria
+ *   (e.g., price format, image file size/type).
+ * - Feedback to the user in the form of error messages or success indicators, enhancing the usability and interactivity of the product
+ *   creation process.
+ * - Integration with the backend or database for the actual creation of the product record upon form submission, including the handling
+ *   of image storage and retrieval.
+ * - Navigation options to return to the product list or menu management screens upon successful product creation, or to cancel the creation
+ *   process.
+ *
+ * This component is crucial for expanding the menu offerings of the food ordering app by allowing administrators to seamlessly add new
+ * products to the platform.
+ */
 const CreateProductScreen = () => {
 	const [name, setName] = useState("");
 	const [price, setPrice] = useState("");

@@ -1,5 +1,5 @@
+import React, { ComponentProps, useEffect, useState } from "react";
 import { Image } from "react-native";
-import React, { ComponentProps, useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 type RemoteImageProps = {
@@ -7,6 +7,19 @@ type RemoteImageProps = {
 	fallback: string;
 } & Omit<ComponentProps<typeof Image>, "source">;
 
+/**
+ * A component for displaying an image from a remote source with a fallback option.
+ *
+ * This component attempts to load an image from a specified path using Supabase Storage. If the path is not provided,
+ * or if loading the image fails, a fallback image is displayed instead. The component leverages React's `useState` and `useEffect`
+ * hooks to manage the image's loading state and to perform the asynchronous image fetching operation.
+ *
+ * @param {RemoteImageProps} props - The properties passed to the component.
+ * @param {string | null} props.path - The path to the remote image in Supabase Storage.
+ * @param {string} props.fallback - The URL to the fallback image to be displayed if the remote image cannot be loaded.
+ * @param {ComponentProps<typeof Image>} imageProps - Additional props to be passed to the underlying `Image` component.
+ * @returns {React.ReactElement} An image element that displays either the remote image or a fallback image.
+ */
 const RemoteImage = ({ path, fallback, ...imageProps }: RemoteImageProps) => {
 	const [image, setImage] = useState("");
 

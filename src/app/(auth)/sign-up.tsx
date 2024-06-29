@@ -5,6 +5,14 @@ import Colors from "@constants/Colors";
 import { Link, Stack } from "expo-router";
 import { supabase } from "@/lib/supabase";
 
+/**
+ * SignUpScreen is a React component that renders a sign-up form for users to create an account.
+ * It uses React Native components for layout and styling, and integrates with Supabase for authentication.
+ *
+ * @component
+ * @example
+ * return <SignUpScreen />
+ */
 const SignUpScreen = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");

@@ -16,6 +16,17 @@ type ThemeProps = {
 export type TextProps = ThemeProps & DefaultText["props"];
 export type ViewProps = ThemeProps & DefaultView["props"];
 
+/**
+ * Provides themed text and view components that automatically adjust their colors based on the app's theme (light or dark mode).
+ *
+ * This module exports two main components, `Text` and `View`, which are themed versions of the default React Native components.
+ * It uses a custom hook, `useThemeColor`, to determine the correct color (light or dark) based on the current theme and the provided color properties.
+ *
+ * - `useThemeColor` takes a `props` object with optional `light` and `dark` properties, and a `colorName` which is used to fetch the color from a predefined `Colors` object if no prop color is provided.
+ * - `Text` and `View` components accept `lightColor` and `darkColor` props in addition to their standard props. These are used to set the color or background color based on the current theme.
+ *
+ * This approach allows for easy theming of app components to support light and dark modes as defined by the system or user preferences.
+ */
 export function useThemeColor(
 	props: { light?: string; dark?: string },
 	colorName: keyof typeof Colors.light & keyof typeof Colors.dark

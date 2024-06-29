@@ -11,6 +11,21 @@ import { Dimensions, Pressable, StyleSheet, Text, View } from "react-native";
 
 const { width } = Dimensions.get("window");
 
+/**
+ * The `ProductDetailsScreen` component is responsible for displaying the detailed information of a specific product
+ * in a food ordering app. It is designed to fetch and present detailed data such as the product's name, description,
+ * price, and images. This component is typically accessed by selecting a product from a list, such as on the `MenuScreen`
+ * or `CategoryPage`.
+ *
+ * Key features of the `ProductDetailsScreen` include:
+ * - Fetching product details using a product ID, which is typically passed via navigation parameters.
+ * - Displaying the product's images, name, description, and price in a user-friendly layout.
+ * - Providing an option for the user to add the product to their cart, including selecting quantities if applicable.
+ * - Handling loading states and potential errors during the fetch operation, ensuring a smooth user experience.
+ *
+ * This component is crucial for allowing users to explore products in depth before making a purchase decision,
+ * contributing significantly to the overall functionality and user experience of the food ordering app.
+ */
 const ProductDetailsScreen = () => {
 	const { id, category } = useLocalSearchParams();
 	const navigation = useNavigation();

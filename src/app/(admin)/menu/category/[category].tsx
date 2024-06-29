@@ -24,6 +24,24 @@ import Animated, {
 const { width } = Dimensions.get("window");
 const IMG_HEIGHT = 300;
 
+/**
+ * The `CategoryPage` component within the `admin` folder is designed to manage and display the products within a specific category
+ * in the administrative interface of a food ordering app. This page allows administrators to view all products associated with a
+ * selected category, edit existing products, or add new products to the category.
+ *
+ * Key functionalities of the `admin` `CategoryPage` include:
+ * - Dynamically fetching and displaying a list of products that belong to a specific category. The category ID or name is typically
+ *   passed as a route parameter or selected from a dropdown menu.
+ * - Providing an interface for administrators to add a new product to the category directly from this page, enhancing the workflow
+ *   efficiency.
+ * - Offering options next to each product for editing or deleting, allowing for easy management of the category's product lineup.
+ * - Implementing search and filter capabilities to help administrators quickly find specific products within the category.
+ * - Handling empty states gracefully by displaying appropriate messages or prompts when no products are available in the category,
+ *   guiding administrators on the next steps.
+ *
+ * This component is essential for the efficient management of product categories, enabling administrators to maintain an organized
+ * and up-to-date menu for the food ordering app.
+ */
 const CategoryPage = () => {
 	const { category, id } = useLocalSearchParams();
 
@@ -157,7 +175,7 @@ const CategoryPage = () => {
 			<Animated.ScrollView ref={scrollRef} scrollEventThrottle={16}>
 				<Animated.Image
 					source={
-						(items && items?.[0]?.types?.categories?.category_image) ||
+						items?.[0]?.types?.categories?.category_image ||
 						require("@assets/images/defaultΙmage.png")
 					}
 					style={[styles.image, imageAnimatedStyle]}

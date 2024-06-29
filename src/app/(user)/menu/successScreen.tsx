@@ -43,6 +43,16 @@ async function verifyPayment(
 	}
 }
 
+/**
+ * `SuccessScreen` is a React component that displays the payment verification status.
+ * It uses the `transactionId` and `accessToken` from the URL search params to verify the payment.
+ * Upon mounting, it initiates the payment verification process and displays the status.
+ *
+ * Uses the `useInsertOrder` hook to potentially insert an order based on the payment status.
+ *
+ * @returns A React component that displays an activity indicator while verifying the payment,
+ * and then shows the payment status as text.
+ */
 const SuccessScreen = () => {
 	const { transactionId, accessToken } = useLocalSearchParams();
 	const [paymentStatus, setPaymentStatus] = useState("");
@@ -79,7 +89,6 @@ const SuccessScreen = () => {
 			if (data.statusId === "F") {
 				setPaymentStatus("success");
 
-				// Insert the order into the database
 				insertOrder(
 					{ total },
 					{

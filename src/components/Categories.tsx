@@ -1,15 +1,24 @@
+import { useCategoryList } from "@/api/products";
+import Colors from "@/constants/Colors";
+import { Link, useSegments } from "expo-router";
 import {
 	ActivityIndicator,
-	Image,
 	ScrollView,
 	StyleSheet,
 	Text,
 	View,
 } from "react-native";
-import Colors from "@/constants/Colors";
-import { Link, useSegments } from "expo-router";
-import { useCategoryList } from "@/api/products";
 import RemoteImage from "./RemoteImage";
+
+/**
+ * Displays a horizontal scroll view of category cards fetched from a category list.
+ *
+ * This component first attempts to fetch a list of categories using the `useCategoryList` hook. It handles loading states,
+ * errors, and the absence of categories gracefully. Each category card displays an image (with a fallback to a default image if necessary)
+ * and the category name. Clicking on a category card navigates the user to a detailed view of items within that category.
+ *
+ * @returns {React.ReactElement | null} A horizontal scroll view of category cards, or null if no categories are available.
+ */
 const Categories = () => {
 	const segments = useSegments();
 	const { data: categories, error, isLoading } = useCategoryList();

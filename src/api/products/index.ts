@@ -2,6 +2,20 @@ import { supabase } from "@/lib/supabase";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { InsertTables, UpdateTables } from "@/types";
 
+/**
+ * Fetches a list of items based on the given category ID.
+ *
+ * This hook uses the `useQuery` hook from React Query to asynchronously fetch items from the database.
+ * It queries the "items" table in the database using Supabase, filtering by the given category ID.
+ *
+ * @param {number} categoryId - The ID of the category to filter items by.
+ * @returns An object containing the following properties:
+ * - `status`: The status of the query ('loading', 'error', 'success').
+ * - `data`: The list of items fetched from the database, or `undefined` if the data is not yet available or an error occurred.
+ * - `error`: The error object if an error occurred during the fetch operation.
+ * - `isFetching`: A boolean indicating if the query is in the process of fetching data.
+ * - `refetch`: A function that can be called to refetch the data.
+ */
 export const useItemsList = (categoryId: number) => {
 	return useQuery({
 		queryKey: ["items", categoryId],
@@ -38,6 +52,20 @@ export const useItemsList = (categoryId: number) => {
 	});
 };
 
+/**
+ * Fetches a single item based on its ID.
+ *
+ * This hook uses the `useQuery` hook from React Query to asynchronously fetch a single item from the database.
+ * It queries the "items" table in the database using Supabase, filtering by the given item ID.
+ *
+ * @param {number} id - The ID of the item to fetch.
+ * @returns An object containing the following properties:
+ * - `status`: The status of the query ('loading', 'error', 'success').
+ * - `data`: The item fetched from the database, or `undefined` if the data is not yet available or an error occurred.
+ * - `error`: The error object if an error occurred during the fetch operation.
+ * - `isFetching`: A boolean indicating if the query is in the process of fetching data.
+ * - `refetch`: A function that can be called to refetch the data.
+ */
 export const useItem = (id: number) => {
 	return useQuery({
 		queryKey: ["items", id],
@@ -76,6 +104,19 @@ export const useItem = (id: number) => {
 	});
 };
 
+/**
+ * Fetches a list of all categories from the database.
+ *
+ * This hook uses the `useQuery` hook from React Query to asynchronously fetch categories from the database.
+ * It queries the "categories" table in the database using Supabase.
+ *
+ * @returns An object containing the following properties:
+ * - `status`: The status of the query ('loading', 'error', 'success').
+ * - `data`: The list of categories fetched from the database, or `undefined` if the data is not yet available or an error occurred.
+ * - `error`: The error object if an error occurred during the fetch operation.
+ * - `isFetching`: A boolean indicating if the query is in the process of fetching data.
+ * - `refetch`: A function that can be called to refetch the data.
+ */
 export const useCategoryList = () => {
 	return useQuery({
 		queryKey: ["categories"],
@@ -91,6 +132,20 @@ export const useCategoryList = () => {
 	});
 };
 
+/**
+ * Fetches a single category based on its ID.
+ *
+ * This hook uses the `useQuery` hook from React Query to asynchronously fetch a single category from the database.
+ * It queries the "categories" table in the database using Supabase, filtering by the given category ID.
+ *
+ * @param {number} categoryId - The ID of the category to fetch.
+ * @returns An object containing the following properties:
+ * - `status`: The status of the query ('loading', 'error', 'success').
+ * - `data`: The category fetched from the database, or `undefined` if the data is not yet available or an error occurred.
+ * - `error`: The error object if an error occurred during the fetch operation.
+ * - `isFetching`: A boolean indicating if the query is in the process of fetching data.
+ * - `refetch`: A function that can be called to refetch the data.
+ */
 export const useCategory = (categoryId: number) => {
 	return useQuery({
 		queryKey: ["categories", categoryId],
@@ -120,6 +175,14 @@ export const useCategory = (categoryId: number) => {
 	});
 };
 
+/**
+ * Performs an insert operation for a new category into the database.
+ *
+ * This hook uses the `useMutation` hook from React Query for the insert operation.
+ * It inserts a new category into the "categories" table in the database using Supabase.
+ *
+ * @returns An object containing methods to execute the mutation and track its status.
+ */
 export const useInsertCategory = () => {
 	const queryClient = useQueryClient();
 
@@ -143,6 +206,19 @@ export const useInsertCategory = () => {
 	});
 };
 
+/**
+ * Fetches a list of all types from the database.
+ *
+ * This hook uses the `useQuery` hook from React Query to asynchronously fetch the types from the database.
+ * It queries the "types" table in the database using Supabase and returns the data.
+ *
+ * @returns An object containing the following properties:
+ * - `status`: The status of the query ('loading', 'error', 'success').
+ * - `data`: The list of types fetched from the database, or `undefined` if the data is not yet available or an error occurred.
+ * - `error`: The error object if an error occurred during the fetch operation.
+ * - `isFetching`: A boolean indicating if the query is in the process of fetching data.
+ * - `refetch`: A function that can be called to refetch the data.
+ */
 export const useTypesList = () => {
 	return useQuery({
 		queryKey: ["types"],
@@ -157,6 +233,20 @@ export const useTypesList = () => {
 	});
 };
 
+/**
+ * Fetches types based on a given category ID from the database.
+ *
+ * This hook uses the `useQuery` hook from React Query to asynchronously fetch types associated with a specific category ID from the database.
+ * It queries the "types" table in the database using Supabase, filtering by the `category_id` field, and returns the data.
+ *
+ * @param {number} categoryId - The ID of the category to fetch types for.
+ * @returns An object containing the following properties:
+ * - `status`: The status of the query ('loading', 'error', 'success').
+ * - `data`: The list of types fetched from the database, or `undefined` if the data is not yet available or an error occurred.
+ * - `error`: The error object if an error occurred during the fetch operation.
+ * - `isFetching`: A boolean indicating if the query is in the process of fetching data.
+ * - `refetch`: A function that can be called to refetch the data.
+ */
 export const useTypes = (categoryId: number) => {
 	return useQuery({
 		queryKey: ["types"],
@@ -174,6 +264,14 @@ export const useTypes = (categoryId: number) => {
 	});
 };
 
+/**
+ * Provides a mutation for inserting new types into the database.
+ *
+ * This hook uses the `useMutation` hook from React Query to asynchronously insert a new type into the "types" table in the database using Supabase.
+ * After a successful insertion, it invalidates queries related to "types" to ensure data consistency across the application.
+ *
+ * @returns An object containing the mutation function and handlers for mutation's lifecycle events such as `onSuccess`.
+ */
 export const useInsertTypes = () => {
 	const queryClient = useQueryClient();
 
@@ -196,6 +294,14 @@ export const useInsertTypes = () => {
 	});
 };
 
+/**
+ * Provides a mutation for inserting new items into the database.
+ *
+ * This hook uses the `useMutation` hook from React Query to asynchronously insert a new item into the "items" table in the database using Supabase.
+ * After a successful insertion, it invalidates queries related to "items" to ensure data consistency across the application.
+ *
+ * @returns An object containing the mutation function and handlers for mutation's lifecycle events such as `onSuccess`.
+ */
 export const useInsertItem = () => {
 	const queryClient = useQueryClient();
 
@@ -217,6 +323,15 @@ export const useInsertItem = () => {
 	});
 };
 
+/**
+ * Provides a mutation for updating a category in the database.
+ *
+ * This hook uses the `useMutation` hook from React Query to asynchronously update a category in the "categories" table in the database using Supabase.
+ * It allows updating fields such as `name` and `category_image`. After a successful update, it invalidates queries related to "categories" and "types" to ensure data consistency.
+ *
+ * @param {number} id - The ID of the category to update.
+ * @returns An object containing the mutation function and handlers for mutation's lifecycle events such as `onSuccess`.
+ */
 export const useUpdateCategory = (id: number) => {
 	const queryClient = useQueryClient();
 
@@ -245,6 +360,14 @@ export const useUpdateCategory = (id: number) => {
 	});
 };
 
+/**
+ * Provides a mutation for updating an item in the database.
+ *
+ * This hook uses the `useMutation` hook from React Query to asynchronously update an item in the "items" table in the database using Supabase.
+ * It allows updating fields such as `name`, `image`, and `price`. After a successful update, it invalidates queries related to "items" to ensure data consistency.
+ *
+ * @returns An object containing the mutation function and handlers for mutation's lifecycle events such as `onSuccess`.
+ */
 export const useUpdateItem = () => {
 	const queryClient = useQueryClient();
 
@@ -273,6 +396,14 @@ export const useUpdateItem = () => {
 	});
 };
 
+/**
+ * Provides a mutation for deleting an item from the database.
+ *
+ * This hook uses the `useMutation` hook from React Query to asynchronously delete an item from the "items" table in the database using Supabase.
+ * After a successful deletion, it invalidates queries related to "items" to ensure data consistency across the application.
+ *
+ * @returns An object containing the mutation function and handlers for mutation's lifecycle events such as `onSuccess`.
+ */
 export const useDeleteItem = () => {
 	const queryClient = useQueryClient();
 
@@ -289,6 +420,14 @@ export const useDeleteItem = () => {
 	});
 };
 
+/**
+ * Provides a mutation for deleting a category from the database.
+ *
+ * This hook uses the `useMutation` hook from React Query to asynchronously delete a category from the "categories" table in the database using Supabase.
+ * After a successful deletion, it invalidates queries related to "categories" to ensure data consistency across the application.
+ *
+ * @returns An object containing the mutation function and handlers for mutation's lifecycle events such as `onSuccess`.
+ */
 export const useDeleteCategory = () => {
 	const queryClient = useQueryClient();
 

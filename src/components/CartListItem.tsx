@@ -1,19 +1,27 @@
-import { View, Text, StyleSheet, Image, Pressable } from "react-native";
-import React from "react";
-import Colors from "../constants/Colors";
-import { CartItem, Product } from "../types";
-import { Link } from "expo-router";
+import { useBasketStore } from "@/store/basketStore";
 import { FontAwesome } from "@expo/vector-icons";
-import { useCart } from "@providers/CartProvider";
+import React from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Colors from "../constants/Colors";
+import { Product } from "../types";
 import { defaultPizzaImage } from "./ProductListItem";
 import RemoteImage from "./RemoteImage";
-import { Tables } from "@/database.types";
-import { useBasketStore } from "@/store/basketStore";
 
 type CartListItemProps = {
 	cartItem: (Product & { quantity: number }) | null;
 };
 
+/**
+ * Renders a single item in the shopping cart.
+ *
+ * This component displays the cart item's image, name, and price. It also includes a quantity selector
+ * allowing the user to increase or decrease the quantity of the cart item. The component uses the `useBasketStore`
+ * hook to access the `updateProduct` function, which is called when the quantity is changed.
+ *
+ * @param {Object} props - Component props.
+ * @param {CartListItemProps} props.cartItem - The cart item to display. Contains information like the image path, name, price, and quantity.
+ * @returns {React.ReactElement | null} The cart list item component or null if `cartItem` is not provided.
+ */
 const CartListItem = ({ cartItem }: CartListItemProps) => {
 	const { updateProduct } = useBasketStore();
 

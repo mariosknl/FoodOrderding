@@ -7,6 +7,17 @@ import { Text, View } from "./Themed";
 
 import Colors from "@constants/Colors";
 
+/**
+ * A functional component that provides information on how to edit the screen's code.
+ *
+ * This component displays instructions for opening the code for the current screen, highlights the file path,
+ * and encourages the user to make changes to see automatic updates. It also includes a link to external documentation
+ * for further assistance if the app does not automatically update after changes are made.
+ *
+ * @param {Object} props - Component props.
+ * @param {string} props.path - The file path to the current screen's code, displayed to the user.
+ * @returns {React.ReactElement} A view component containing instructions and a highlighted file path.
+ */
 export default function EditScreenInfo({ path }: { path: string }) {
 	return (
 		<View>
