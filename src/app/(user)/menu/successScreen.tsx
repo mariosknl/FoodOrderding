@@ -1,5 +1,6 @@
 import { useInsertOrderItems } from "@/api/order-item";
 import { useInsertOrder } from "@/api/orders";
+import Button from "@/components/Button";
 import { Tables } from "@/database.types";
 import { useBasketStore } from "@/store/basketStore";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -104,7 +105,15 @@ const SuccessScreen = () => {
 	return (
 		<View>
 			{paymentStatus === "verifying" && <ActivityIndicator />}
-			{paymentStatus === "success" && <Text>Payment Successful!</Text>}
+			{paymentStatus === "success" && (
+				<>
+					<Text>Payment Successful!</Text>
+					<Button
+						text="Return to Menu"
+						onPress={() => router.push("/(user)/menu")}
+					/>
+				</>
+			)}
 			{paymentStatus === "failed" && (
 				<Text>Payment Failed. Please try again.</Text>
 			)}
