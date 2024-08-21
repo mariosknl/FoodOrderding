@@ -3,7 +3,7 @@ import { useStore } from "@/store/store";
 import { PropsWithChildren, useEffect } from "react";
 
 export default function AuthProvider({ children }: PropsWithChildren) {
-	const { fetchSession, setSession, session, profile } = useStore();
+	const { fetchSession, setSession } = useStore();
 
 	useEffect(() => {
 		fetchSession();

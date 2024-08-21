@@ -19,9 +19,13 @@ type ButtonProps = {
  * @returns {React.ReactElement} A styled button element with text.
  */
 const Button = forwardRef<View | null, ButtonProps>(
-	({ text, ...pressableProps }, ref) => {
+	({ text, disabled, ...pressableProps }, ref) => {
 		return (
-			<Pressable ref={ref} {...pressableProps} style={styles.container}>
+			<Pressable
+				ref={ref}
+				{...pressableProps}
+				style={[styles.container, disabled && styles.disabled]}
+			>
 				<Text style={styles.text}>{text}</Text>
 			</Pressable>
 		);
@@ -40,6 +44,9 @@ const styles = StyleSheet.create({
 		fontSize: 16,
 		fontWeight: "600",
 		color: "white",
+	},
+	disabled: {
+		opacity: 0.5,
 	},
 });
 
