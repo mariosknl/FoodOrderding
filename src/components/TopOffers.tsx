@@ -1,13 +1,5 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  Image,
-  Pressable,
-} from "react-native";
+import { View, Text, ScrollView, Image, Pressable } from "react-native";
 import { Link } from "expo-router";
-import Colors from "@constants/Colors";
 import { shopInfo } from "@assets/data/restaurant";
 import { StatusBar } from "expo-status-bar";
 
@@ -32,15 +24,32 @@ const TopOffers = () => {
         }}
       >
         {offers.map((offer) => (
-          <Link key={offer.id} href={""} asChild>
+          <Link
+            key={offer.id}
+            href={{
+              pathname: "/(user)/menu/(modal)/[product]",
+              params: {
+                id: offer.id,
+                category: offer.name,
+                product: offer.name,
+              },
+            }}
+            asChild
+          >
             <Pressable>
-              <View style={styles.restaurantCard}>
-                <Image source={offer.img} style={styles.image} />
+              <View className="w-[200px] h-[200px] bg-white mr-2 shadow-md rounded">
+                <Image
+                  source={offer.img}
+                  className="flex-5 w-full h-24"
+                  resizeMode="contain"
+                />
 
-                <View style={styles.categoryBox}>
-                  <Text style={styles.categoryText}>{offer.name}</Text>
-                  <Text style={styles.price}>€ {offer.price}</Text>
-                  <Text style={styles.info}>{offer.info}</Text>
+                <View className="flex-2 p-[10px]">
+                  <Text className="py-1 text-sm font-bold">{offer.name}</Text>
+                  <Text className="text-[16px] font-bold py-1 text-black">
+                    € {offer.price}
+                  </Text>
+                  <Text className="text-sm text-black">{offer.info}</Text>
                 </View>
               </View>
             </Pressable>
@@ -51,42 +60,5 @@ const TopOffers = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  restaurantCard: {
-    width: 200,
-    height: 200,
-    backgroundColor: "white",
-    marginEnd: 10,
-    elevation: 2,
-    shadowColor: "black",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.06,
-    borderRadius: 4,
-  },
-  categoryText: {
-    paddingVertical: 4,
-    fontSize: 14,
-    fontWeight: "bold",
-  },
-  image: {
-    flex: 5,
-    width: undefined,
-  },
-  categoryBox: {
-    flex: 2,
-    padding: 10,
-  },
-  price: {
-    fontSize: 16,
-    fontWeight: "bold",
-    paddingVertical: 4,
-    color: Colors.primary,
-  },
-  info: {
-    fontSize: 14,
-    color: Colors.black,
-  },
-});
 
 export default TopOffers;
