@@ -6,7 +6,7 @@ import { defaultPizzaImage } from "./ProductListItem";
 import RemoteImage from "./RemoteImage";
 
 type OrderItemListItemProps = {
-	item: { items: Tables<"items"> | null } & Tables<"order_items">;
+  item: { items: Tables<"items"> | null } & Tables<"order_items">;
 };
 
 /**
@@ -20,66 +20,30 @@ type OrderItemListItemProps = {
  * @param {OrderItemListItemProps} props.item - The order item to display. Contains information like the image path, name, price, and quantity.
  * @returns {React.ReactElement} The order item list item component.
  */
-const OrderItemListItem = ({ item }: OrderItemListItemProps) => {
-	return (
-		<View style={styles.container}>
-			<RemoteImage
-				path={item?.items?.img}
-				fallback={defaultPizzaImage}
-				style={styles.image}
-				resizeMode="contain"
-			/>
-			<View style={{ flex: 1 }}>
-				<Text style={styles.title}>{item.items?.name}</Text>
-				<View style={styles.subtitleContainer}>
-					<Text style={styles.price}>€{item.items?.price}</Text>
-				</View>
-			</View>
-			<View style={styles.quantitySelector}>
-				<Text style={styles.quantity}>{item?.quantity}</Text>
-			</View>
-		</View>
-	);
+const OrderItemListItem: React.FC<OrderItemListItemProps> = ({ item }) => {
+  return (
+    <View className="bg-white rounded-[10px] flex flex-row items-center p-[5px]">
+      <RemoteImage
+        path={item?.items?.img}
+        fallback={defaultPizzaImage}
+        resizeMode="contain"
+        className="w-[75px] aspect-square self-center mr-[10px]"
+      />
+      <View className="flex-1">
+        <Text className="font-JakartaSemiBold text-[16px] mb-[5px]">
+          {item.items?.name}
+        </Text>
+        <View className="flex flex-row gap-[5px]">
+          <Text className="bg-[#2f95dc] font-JakartaBold">
+            €{item.items?.price}
+          </Text>
+        </View>
+      </View>
+      <View className="flex flex-row gap-[10px] items-center mt-[10px]">
+        <Text className="font-JakartaSemiBold text-lg">{item?.quantity}</Text>
+      </View>
+    </View>
+  );
 };
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: "white",
-		borderRadius: 10,
-		padding: 5,
-		flex: 1,
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	image: {
-		width: 75,
-		aspectRatio: 1,
-		alignSelf: "center",
-		marginRight: 10,
-	},
-	title: {
-		fontWeight: "500",
-		fontSize: 16,
-		marginBottom: 5,
-	},
-	subtitleContainer: {
-		flexDirection: "row",
-		gap: 5,
-	},
-	quantitySelector: {
-		flexDirection: "row",
-		gap: 10,
-		alignItems: "center",
-		marginVertical: 10,
-	},
-	quantity: {
-		fontWeight: "500",
-		fontSize: 18,
-	},
-	price: {
-		color: Colors.light.tint,
-		fontWeight: "bold",
-	},
-});
 
 export default OrderItemListItem;
