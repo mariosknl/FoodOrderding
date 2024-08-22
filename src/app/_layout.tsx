@@ -8,7 +8,6 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { useColorScheme } from "@components/useColorScheme";
-
 import AuthProvider from "./providers/AuthProvider";
 import NotificationProvider from "./providers/NotificationProvider";
 import QueryProvider from "./providers/QueryProvider";
