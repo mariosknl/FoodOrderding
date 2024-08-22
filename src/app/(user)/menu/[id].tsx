@@ -2,10 +2,9 @@ import { useItem } from "@/api/products";
 import Button from "@/components/Button";
 import { defaultPizzaImage } from "@/components/ProductListItem";
 import RemoteImage from "@/components/RemoteImage";
-import Colors from "@/constants/Colors";
 import { useBasketStore } from "@/store/basketStore";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Text, View } from "react-native";
 
 /**
  * `ProductDetailsScreen` is a React component that displays detailed information about a specific product.
@@ -20,80 +19,46 @@ import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
  * name, description, price, and images, with an option to add the product to the cart.
  */
 const ProductDetailsScreen = () => {
-	const { id: idString } = useLocalSearchParams();
-	const router = useRouter();
-	const { addProduct } = useBasketStore();
+  const { id: idString } = useLocalSearchParams();
+  const router = useRouter();
+  const { addProduct } = useBasketStore();
 
-	if (!idString) return null;
-	const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+  if (!idString) return null;
 
-	const { data: product, error, isLoading } = useItem(id);
+  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
-	const addToCart = () => {
-		if (!product) return;
+  const { data: product, error, isLoading } = useItem(id);
 
-		addProduct(product);
-		router.push("cart");
-	};
+  const addToCart = () => {
+    if (!product) return;
 
-	if (isLoading) {
-		return <ActivityIndicator />;
-	}
+    addProduct(product);
+  };
 
-	if (error) {
-		return <Text>Failed to fetch products</Text>;
-	}
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
-	return (
-		<View style={styles.container}>
-			<Stack.Screen options={{ title: product?.name }} />
-			<RemoteImage
-				path={product?.img}
-				fallback={defaultPizzaImage}
-				style={styles.image}
-			/>
+  if (error) {
+    return <Text>Failed to fetch products</Text>;
+  }
 
-			<Text>Select size</Text>
+  return (
+    <View className="bg-white flex- p-[10px]">
+      <Stack.Screen options={{ title: product?.name }} />
+      <RemoteImage
+        path={product?.img}
+        fallback={defaultPizzaImage}
+        className="w-full aspect-square"
+      />
 
-			<Text style={styles.price}>€ {product?.price}</Text>
+      <Text>Select size</Text>
 
-			<Button onPress={addToCart} text="Add to cart" />
-		</View>
-	);
+      <Text className="text-lg font-bold mt-auto">€ {product?.price}</Text>
+
+      <Button onPress={addToCart} text="Add to cart" />
+    </View>
+  );
 };
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: Colors.light.background,
-		flex: 1,
-		padding: 10,
-	},
-	image: {
-		width: "100%",
-		aspectRatio: 1,
-	},
-	price: {
-		fontSize: 18,
-		fontWeight: "bold",
-		marginTop: "auto",
-	},
-	sizes: {
-		flexDirection: "row",
-		justifyContent: "space-around",
-		marginVertical: 10,
-	},
-	size: {
-		backgroundColor: "gainsboro",
-		width: 50,
-		aspectRatio: 1,
-		borderRadius: 25,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	sizeText: {
-		fontSize: 20,
-		fontWeight: "500",
-	},
-});
 
 export default ProductDetailsScreen;

@@ -1,15 +1,6 @@
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Alert,
-  ScrollView,
-  Image,
-} from "react-native";
+import { View, Text, Alert, ScrollView, Image } from "react-native";
 import React, { useState } from "react";
 import Button from "@components/Button";
-import Colors from "@constants/Colors";
 import { Link } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import { icons, images } from "@/constants";
@@ -25,8 +16,6 @@ import Auth from "@/components/Auth";
  * return <SignUpScreen />
  */
 const SignUpScreen = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
@@ -36,8 +25,8 @@ const SignUpScreen = () => {
   async function signUpWithEmail() {
     setLoading(true);
     const { error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
+      email: form.email,
+      password: form.password,
     });
 
     if (error) Alert.alert(error.message);
@@ -102,25 +91,5 @@ const SignUpScreen = () => {
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-    justifyContent: "center",
-    flex: 1,
-  },
-  label: {
-    color: "gray",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "gray",
-    padding: 10,
-    marginTop: 5,
-    marginBottom: 20,
-    backgroundColor: "white",
-    borderRadius: 5,
-  },
-});
 
 export default SignUpScreen;
