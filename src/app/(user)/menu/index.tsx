@@ -1,11 +1,11 @@
 import {
-	ActivityIndicator,
-	Dimensions,
-	Image,
-	ScrollView,
-	StyleSheet,
-	Text,
-	View,
+  ActivityIndicator,
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from "react-native";
 
 import { useItemsList } from "@/api/products";
@@ -30,31 +30,29 @@ const { width, height } = Dimensions.get("window");
  * search, and filter menu items, view item details, and add items to their cart.
  */
 export default function MenuScreen() {
-	return (
-		<SafeAreaView style={styles.container}>
-			<View style={{ top: 0, position: "absolute" }}>
-				<Image
-					source={require("@assets/images/restaurant.png")}
-					style={styles.image}
-				/>
-			</View>
+  return (
+    <SafeAreaView className="top-0">
+      <View className="absolute top-0">
+        <Image
+          source={require("@assets/images/restaurant.png")}
+          style={styles.image}
+        />
+      </View>
 
-			<ScrollView style={{ position: "absolute", top: 250 }}>
-				<Categories />
-				<Text style={{ paddingHorizontal: 15 }}>Top offers today</Text>
-				<TopOffers />
-			</ScrollView>
-		</SafeAreaView>
-	);
+      <ScrollView className="absolute top-[250px]">
+        <Categories />
+        <Text className="px-[15px] text-lg font-JakartaSemiBold">
+          Top offers today
+        </Text>
+        <TopOffers />
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-	container: {
-		top: 0,
-		backgroundColor: Colors.lightGrey,
-	},
-	image: {
-		width,
-		height: height / 3.5,
-	},
+  image: {
+    width,
+    height: height / 3.5,
+  },
 });

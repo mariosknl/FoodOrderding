@@ -4,13 +4,7 @@ import RemoteImage from "@/components/RemoteImage";
 import Colors from "@/constants/Colors";
 import { FontAwesome } from "@expo/vector-icons";
 import { Link, Stack, useLocalSearchParams } from "expo-router";
-import {
-	ActivityIndicator,
-	Pressable,
-	StyleSheet,
-	Text,
-	View,
-} from "react-native";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 /**
  * The `ProductDetailsScreen` component within the `admin` folder is tailored for the administrative interface of a food ordering app,
@@ -30,74 +24,54 @@ import {
  * accurate and up-to-date.
  */
 const ProductDetailsScreen = () => {
-	const { id: idString } = useLocalSearchParams();
+  const { id: idString } = useLocalSearchParams();
 
-	if (!idString) return;
+  if (!idString) return;
 
-	const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
-	const { data: product, error, isLoading } = useItem(id);
+  const { data: product, error, isLoading } = useItem(id);
 
-	if (isLoading) {
-		return <ActivityIndicator />;
-	}
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
 
-	if (error) {
-		return <Text>Failed to fetch products</Text>;
-	}
+  if (error) {
+    return <Text>Failed to fetch products</Text>;
+  }
 
-	return (
-		<View style={styles.container}>
-			<Stack.Screen
-				options={{
-					title: "Menu",
-					headerRight: () => (
-						<Link href={`/(admin)/menu/create?id=${id}}`} asChild>
-							<Pressable>
-								{({ pressed }) => (
-									<FontAwesome
-										name="pencil"
-										size={25}
-										color={Colors.light.tint}
-										style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-									/>
-								)}
-							</Pressable>
-						</Link>
-					),
-				}}
-			/>
-			<Stack.Screen options={{ title: product?.name }} />
-			<RemoteImage
-				path={product?.img}
-				fallback={defaultPizzaImage}
-				style={styles.image}
-			/>
+  return (
+    <View className="bg-white flex- p-[10px]">
+      <Stack.Screen
+        options={{
+          title: "Menu",
+          headerRight: () => (
+            <Link href={`/(admin)/menu/create?id=${id}}`} asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="pencil"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
+      />
+      <Stack.Screen options={{ title: product?.name }} />
+      <RemoteImage
+        path={product?.img}
+        fallback={defaultPizzaImage}
+        className="w-full aspect-square"
+      />
 
-			<Text style={styles.title}>€ {product?.name}</Text>
-			<Text style={styles.price}>€ {product?.price}</Text>
-		</View>
-	);
+      <Text className="text-lg font-bold mt-auto">€ {product?.name}</Text>
+      <Text className="text-lg font-bold mt-auto">€ {product?.price}</Text>
+    </View>
+  );
 };
-
-const styles = StyleSheet.create({
-	container: {
-		backgroundColor: Colors.light.background,
-		flex: 1,
-		padding: 10,
-	},
-	image: {
-		width: "100%",
-		aspectRatio: 1,
-	},
-	price: {
-		fontSize: 18,
-		fontWeight: "bold",
-	},
-	title: {
-		fontSize: 20,
-		fontWeight: "bold",
-	},
-});
 
 export default ProductDetailsScreen;

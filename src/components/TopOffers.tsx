@@ -27,7 +27,7 @@ const TopOffers = () => {
           <Link
             key={offer.id}
             href={{
-              pathname: "/(user)/menu/[id]",
+              pathname: "/(user)/menu/(modal)/[product]",
               params: {
                 id: offer.id,
                 category: offer.name,
