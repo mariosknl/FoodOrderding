@@ -34,7 +34,7 @@ const OrderItemListItem: React.FC<OrderItemListItemProps> = ({ item }) => {
           {item.items?.name}
         </Text>
         <View className="flex flex-row gap-[5px]">
-          <Text className="bg-[#2f95dc] font-JakartaBold">
+          <Text className="bg-basic font-JakartaBold">
             €{item.items?.price}
           </Text>
         </View>

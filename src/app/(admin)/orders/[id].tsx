@@ -56,11 +56,11 @@ export default function OrderDetailsScreen() {
                 <Pressable
                   key={status}
                   onPress={() => updateStatus(status)}
-                  className={`border border-[#2f95dc] p-[10px] rounded-md my-[10px]
-                    ${order.status === status ? "bg-[#2f95dc]" : "bg-transparent"}`}
+                  className={`border border-basic p-[10px] rounded-md my-[10px]
+                    ${order.status === status ? "bg-basic" : "bg-transparent"}`}
                 >
                   <Text
-                    className={`${order.status === status ? "text-white" : "text-[#2f95dc]"}`}
+                    className={`${order.status === status ? "text-white" : "text-basic"}`}
                   >
                     {status}
                   </Text>

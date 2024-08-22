@@ -238,7 +238,7 @@ const CreateProductScreen = () => {
         source={imageSource}
       />
       <Text
-        className="self-center font-JakartaBold text-[#2f95dc] my-[10px]"
+        className="self-center font-JakartaBold text-basic my-[10px]"
         onPress={pickImage}
       >
         Επιλογή Εικόνας
@@ -343,7 +343,7 @@ const CreateProductScreen = () => {
       {isUpdating && (
         <Text
           onPress={confirmDelete}
-          className="self-center font-JakartaBold text-[#2f95dc] mt-[10px]"
+          className="self-center font-JakartaBold text-basic mt-[10px]"
         >
           Delete
         </Text>

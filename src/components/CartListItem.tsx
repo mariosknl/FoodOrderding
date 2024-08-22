@@ -37,7 +37,7 @@ const CartListItem: React.FC<CartListItemProps> = ({ cartItem }) => {
           {cartItem?.name}
         </Text>
         <View className="flex flex-row gap-[5px]">
-          <Text className="text-[#2f95dc] font-JakartaBold">
+          <Text className="text-basic font-JakartaBold">
             ${cartItem?.price?.toFixed(2)}
           </Text>
         </View>

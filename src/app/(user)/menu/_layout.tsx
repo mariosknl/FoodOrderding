@@ -47,7 +47,7 @@ export default function MenuStack() {
                   {items > 0 ? (
                     <View
                       className="absolute h-[17px] w-[17px]
-										rounded-[10px] right-[10px] bottom-[10px] bg-[#20E1B2] items-center justify-center"
+										rounded-[10px] right-[10px] bottom-[10px] bg-base items-center justify-center"
                     >
                       <Text className="text-white font-JakartaBold">
                         {items}

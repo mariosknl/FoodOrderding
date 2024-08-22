@@ -34,9 +34,7 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
         <Text className="text-lg font-JakartaSemiBold my-[10px]">
           {product.name}
         </Text>
-        <Text className="font-JakartaBold text-[#2f95dc]">
-          € {product.price}
-        </Text>
+        <Text className="font-JakartaBold text-basic">€ {product.price}</Text>
       </Pressable>
     </Link>
   );
