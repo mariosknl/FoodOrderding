@@ -54,7 +54,9 @@ const ProductDetailsScreen = () => {
 
       <Text>Select size</Text>
 
-      <Text className="text-lg font-bold mt-auto">€ {product?.price}</Text>
+      <Text className="text-lg font-JakartaBold mt-auto">
+        € {product?.price}
+      </Text>
 
       <Button onPress={addToCart} text="Add to cart" />
     </View>

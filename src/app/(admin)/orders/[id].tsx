@@ -50,29 +50,17 @@ export default function OrderDetailsScreen() {
         ListHeaderComponent={() => <OrderListItem order={order} />}
         ListFooterComponent={() => (
           <>
-            <Text style={{ fontWeight: "bold" }}>Status</Text>
-            <View style={{ flexDirection: "row", gap: 5 }}>
+            <Text className="font-JakartaBold">Status</Text>
+            <View className="flex flex-row gap-[5px]">
               {OrderStatusList.map((status) => (
                 <Pressable
                   key={status}
                   onPress={() => updateStatus(status)}
-                  style={{
-                    borderColor: Colors.light.tint,
-                    borderWidth: 1,
-                    padding: 10,
-                    borderRadius: 5,
-                    marginVertical: 10,
-                    backgroundColor:
-                      order.status === status
-                        ? Colors.light.tint
-                        : "transparent",
-                  }}
+                  className={`border border-[#2f95dc] p-[10px] rounded-md my-[10px]
+                    ${order.status === status ? "bg-[#2f95dc]" : "bg-transparent"}`}
                 >
                   <Text
-                    style={{
-                      color:
-                        order.status === status ? "white" : Colors.light.tint,
-                    }}
+                    className={`${order.status === status ? "text-white" : "text-[#2f95dc]"}`}
                   >
                     {status}
                   </Text>

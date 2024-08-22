@@ -68,8 +68,12 @@ const ProductDetailsScreen = () => {
         className="w-full aspect-square"
       />
 
-      <Text className="text-lg font-bold mt-auto">€ {product?.name}</Text>
-      <Text className="text-lg font-bold mt-auto">€ {product?.price}</Text>
+      <Text className="text-lg font-JakartaSemiBold mt-auto">
+        € {product?.name}
+      </Text>
+      <Text className="text-lg font-JakartaSemiBold mt-auto">
+        € {product?.price}
+      </Text>
     </View>
   );
 };

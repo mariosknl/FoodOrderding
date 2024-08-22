@@ -66,7 +66,9 @@ const ProductDetailsScreen = () => {
       />
 
       <View className="p-[10px]">
-        <Text className="text-[18px font-semibold my-3">{product.name}</Text>
+        <Text className="text-[18px font-JakartaSemiBold my-3">
+          {product.name}
+        </Text>
         <Text className="font-JakartaBold mt-auto text-black">
           €{product.price}
         </Text>

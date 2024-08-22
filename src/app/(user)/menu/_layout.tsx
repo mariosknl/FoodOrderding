@@ -27,58 +27,45 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
  * @returns A React component that represents the navigation stack for the menu section of the app.
  */
 export default function MenuStack() {
-	const { items } = useBasketStore();
+  const { items } = useBasketStore();
 
-	return (
-		<Stack
-			screenOptions={{
-				headerTitle: "",
-				headerRight: () => (
-					<Link href="menu/cart" asChild>
-						<Pressable>
-							{({ pressed }) => (
-								<View>
-									<FontAwesome
-										name="shopping-cart"
-										size={25}
-										color={Colors.light.tint}
-										style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-									/>
-									{items > 0 ? (
-										<View style={styles.cartCountContainer}>
-											<Text style={styles.cartCountText}>{items}</Text>
-										</View>
-									) : null}
-								</View>
-							)}
-						</Pressable>
-					</Link>
-				),
-			}}
-		>
-			<Stack.Screen name={`category/[category]`} options={{ title: "" }} />
-			<Stack.Screen name={`(modal)/[product]`} />
-			<Stack.Screen name="cart" />
-			<Stack.Screen name="checkoutScreen" />
-			<Stack.Screen name="successScreen" />
-		</Stack>
-	);
+  return (
+    <Stack
+      screenOptions={{
+        headerTitle: "",
+        headerRight: () => (
+          <Link href="menu/cart" asChild>
+            <Pressable>
+              {({ pressed }) => (
+                <View>
+                  <FontAwesome
+                    name="shopping-cart"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                  {items > 0 ? (
+                    <View
+                      className="absolute h-[17px] w-[17px]
+										rounded-[10px] right-[10px] bottom-[10px] bg-[#20E1B2] items-center justify-center"
+                    >
+                      <Text className="text-white font-JakartaBold">
+                        {items}
+                      </Text>
+                    </View>
+                  ) : null}
+                </View>
+              )}
+            </Pressable>
+          </Link>
+        ),
+      }}
+    >
+      <Stack.Screen name={`category/[category]`} options={{ title: "" }} />
+      <Stack.Screen name={`(modal)/[product]`} />
+      <Stack.Screen name="cart" />
+      <Stack.Screen name="checkoutScreen" />
+      <Stack.Screen name="successScreen" />
+    </Stack>
+  );
 }
-
-const styles = StyleSheet.create({
-	cartCountContainer: {
-		position: "absolute",
-		height: 17,
-		width: 17,
-		borderRadius: 10,
-		backgroundColor: Colors.primary,
-		right: 10,
-		bottom: 10,
-		alignItems: "center",
-		justifyContent: "center",
-	},
-	cartCountText: {
-		color: "white",
-		fontWeight: "bold",
-	},
-});

@@ -148,7 +148,7 @@ const CategoryPage = () => {
           sections={convertedItems}
           renderItem={renderItem}
           renderSectionHeader={({ section: { title } }) => (
-            <Text className="text-[22px] font-bold, m-4, mt-[10px] pl-4">
+            <Text className="text-[22px] font-JakartaBold, m-4, mt-[10px] pl-4">
               {title}
             </Text>
           )}
