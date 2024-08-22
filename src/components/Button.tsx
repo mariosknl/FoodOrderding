@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import Colors from "@constants/Colors";
 
 type ButtonProps = {
-	text: string;
+  text: string;
 } & React.ComponentPropsWithoutRef<typeof Pressable>;
 
 /**
@@ -19,35 +19,43 @@ type ButtonProps = {
  * @returns {React.ReactElement} A styled button element with text.
  */
 const Button = forwardRef<View | null, ButtonProps>(
-	({ text, disabled, ...pressableProps }, ref) => {
-		return (
-			<Pressable
-				ref={ref}
-				{...pressableProps}
-				style={[styles.container, disabled && styles.disabled]}
-			>
-				<Text style={styles.text}>{text}</Text>
-			</Pressable>
-		);
-	}
+  ({ text, disabled, onPress, ...pressableProps }, ref) => {
+    return (
+      <Pressable
+        ref={ref}
+        {...pressableProps}
+        onPress={disabled ? undefined : onPress} // Prevent onPress when disabled
+        style={({ pressed }) => [
+          styles.container,
+          disabled && styles.disabled,
+          pressed && !disabled && styles.pressed, // Optional: Add a pressed state style
+        ]}
+      >
+        <Text style={styles.text}>{text}</Text>
+      </Pressable>
+    );
+  },
 );
 
 const styles = StyleSheet.create({
-	container: {
-		backgroundColor: Colors.light.tint,
-		padding: 15,
-		alignItems: "center",
-		borderRadius: 100,
-		marginVertical: 10,
-	},
-	text: {
-		fontSize: 16,
-		fontWeight: "600",
-		color: "white",
-	},
-	disabled: {
-		opacity: 0.5,
-	},
+  container: {
+    backgroundColor: Colors.light.tint,
+    padding: 15,
+    alignItems: "center",
+    borderRadius: 100,
+    marginVertical: 10,
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "white",
+  },
+  disabled: {
+    opacity: 0.5,
+  },
+  pressed: {
+    opacity: 0.8,
+  },
 });
 
 export default Button;

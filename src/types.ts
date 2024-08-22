@@ -1,3 +1,4 @@
+import { TextInputProps } from "react-native";
 import { Database } from "./database.types";
 
 export type Tables<T extends keyof Database["public"]["Tables"]> =
@@ -90,3 +91,14 @@ export type Navigation = {
 		params: { orderCode: string; accessToken: string }
 	) => void;
 };
+
+export interface InputFieldProps extends TextInputProps {
+	label: string;
+	icon?: any;
+	secureTextEntry?: boolean;
+	labelStyle?: string;
+	containerStyle?: string;
+	inputStyle?: string;
+	iconStyle?: string;
+	className?: string;
+}

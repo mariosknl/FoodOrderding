@@ -6,6 +6,11 @@ import { Link, Stack } from "expo-router";
 import { supabase } from "@/lib/supabase";
 import Auth from "@/components/Auth";
 import { AppleAuth } from "@/components/AppleAuth";
+import InputField from "@/components/InputField";
+import { icons, images } from "@/constants";
+import { ScrollView } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Image } from "react-native";
 
 /**
  * The `SignInScreen` component within the `sign-in.tsx` file is a key part of the authentication flow in a food ordering app, designed
@@ -33,6 +38,10 @@ const SignInScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
 
   async function signInWithEmail() {
     setLoading(true);
@@ -46,38 +55,63 @@ const SignInScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Stack.Screen options={{ title: "Sign in" }} />
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="flex-1 bg-white">
+        <Stack.Screen options={{ headerShown: false }} />
 
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="jon@gmail.com"
-        style={styles.input}
-        autoCapitalize="none"
-      />
+        <View className="relative w-full h-[250px]">
+          <Image source={images.coffee} className="z-0 w-full h-[250px]" />
+          <Text className="text-2xl text-white font-JakartaSemibold absolute bottom-5 left-5">
+            Καλωσήρθατε
+          </Text>
+        </View>
 
-      <Text style={styles.label}>Password</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder=""
-        style={styles.input}
-        secureTextEntry
-        autoCapitalize="none"
-      />
+        <View className="p-5">
+          <InputField
+            label="Email"
+            placeholder="Καταχωρήστε το email σας"
+            value={form.email}
+            onChangeText={(value: string) => setForm({ ...form, email: value })}
+            autoCapitalize="none"
+            icon={icons.email}
+          />
 
-      <Button
-        onPress={signInWithEmail}
-        disabled={loading}
-        text={loading ? "Signin in..." : "Sign in"}
-      />
-      <Auth />
-      <Link href="/sign-up" style={styles.textButton}>
-        Create an account
-      </Link>
-    </View>
+          <InputField
+            label="Κωδικός πρόσβασης"
+            placeholder="Καταχωρήστε τον κωδικό σας"
+            value={form.password}
+            onChangeText={(value: string) =>
+              setForm({ ...form, password: value })
+            }
+            secureTextEntry
+            autoCapitalize="none"
+            icon={icons.lock}
+          />
+
+          <Button
+            onPress={signInWithEmail}
+            disabled={loading}
+            text={loading ? "Είσοδος..." : "Είσοδος"}
+          />
+          <View className="flex flex-row justify-center items-center my-2 gap-x-3">
+            <View className="flex-1 h-[1px] bg-general-100" />
+            <Text>ή</Text>
+            <View className="flex-1 h-[1px] bg-general-100" />
+          </View>
+
+          <View className="flex flex-row items-center justify-center">
+            <Auth />
+          </View>
+          <Link
+            href="/sign-up"
+            className="text-md text-center  text-general-200 mt-10"
+          >
+            <Text>Δεν έχεις λογαριασμό? </Text>
+            <Text className="text-primary-500">Δημιούργησε λογαριασμό</Text>
+          </Link>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 

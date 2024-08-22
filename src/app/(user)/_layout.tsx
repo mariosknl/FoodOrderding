@@ -1,65 +1,95 @@
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Redirect, Tabs } from "expo-router";
 import React from "react";
-
+import { Redirect, Tabs } from "expo-router";
 import { useStore } from "@/store/store";
-import { useClientOnlyValue } from "@components/useClientOnlyValue";
-import { useColorScheme } from "@components/useColorScheme";
-import Colors from "@constants/Colors";
+import { View } from "react-native";
+import { ImageSourcePropType } from "react-native";
+import { Image } from "react-native";
+import { icons } from "@/constants";
 
-// You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: {
-	name: React.ComponentProps<typeof FontAwesome>["name"];
-	color: string;
-}) {
-	return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />;
-}
+const TabBarIcon = ({
+  focused,
+  source,
+}: {
+  focused: boolean;
+  source: ImageSourcePropType;
+}) => (
+  <View
+    className={`flex flex-row justify-center items-center rounded-full ${focused ? "bg-general-300" : ""}`}
+  >
+    <View
+      className={`rounded-full w-12 h-12 items-center justify-center ${focused ? "bg-general-400" : ""}`}
+    >
+      <Image
+        source={source}
+        tintColor="white"
+        resizeMode="contain"
+        className="w-7 h-7"
+      />
+    </View>
+  </View>
+);
 
 export default function TabLayout() {
-	const colorScheme = useColorScheme();
-	const { session } = useStore();
+  const { session } = useStore();
 
-	if (!session) {
-		return <Redirect href={"/"} />;
-	}
+  if (!session) {
+    return <Redirect href={"/"} />;
+  }
 
-	return (
-		<Tabs
-			screenOptions={{
-				tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-				// Disable the static render of the header on web
-				// to prevent a hydration error in React Navigation v6.
-				headerShown: useClientOnlyValue(false, true),
-			}}
-		>
-			<Tabs.Screen name="index" options={{ href: null }} />
+  return (
+    <Tabs
+      initialRouteName="index"
+      screenOptions={{
+        tabBarActiveTintColor: "white",
+        tabBarInactiveTintColor: "white",
+        tabBarShowLabel: false,
+        tabBarStyle: {
+          backgroundColor: "#333333",
+          borderRadius: 50,
+          paddingBottom: 0, // ios only
+          overflow: "hidden",
+          marginHorizontal: 20,
+          marginBottom: 20,
+          height: 78,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexDirection: "row",
+          position: "absolute",
+        },
+      }}
+    >
+      <Tabs.Screen name="index" options={{ href: null }} />
 
-			<Tabs.Screen
-				name="menu"
-				options={{
-					title: "Menu",
-					headerShown: false,
-					tabBarIcon: ({ color }) => (
-						<TabBarIcon name="cutlery" color={color} />
-					),
-				}}
-			/>
-			<Tabs.Screen
-				name="orders"
-				options={{
-					title: "Orders",
-					headerShown: false,
-					tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
-				}}
-			/>
+      <Tabs.Screen
+        name="menu"
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon source={icons.home} focused={focused} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="orders"
+        options={{
+          title: "Παραγγελίες",
+          headerShown: true,
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon source={icons.list} focused={focused} />
+          ),
+        }}
+      />
 
-			<Tabs.Screen
-				name="profile"
-				options={{
-					title: "Profile",
-					tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-				}}
-			/>
-		</Tabs>
-	);
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Προφίλ",
+          tabBarIcon: ({ focused }) => (
+            <TabBarIcon source={icons.profile} focused={focused} />
+          ),
+        }}
+      />
+    </Tabs>
+  );
 }
