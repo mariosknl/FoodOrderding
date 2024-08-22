@@ -27,75 +27,58 @@ const { width } = Dimensions.get("window");
  * contributing significantly to the overall functionality and user experience of the food ordering app.
  */
 const ProductDetailsScreen = () => {
-	const { id, category } = useLocalSearchParams();
-	const navigation = useNavigation();
-	const { addProduct } = useBasketStore();
+  const { id, category } = useLocalSearchParams();
+  const navigation = useNavigation();
+  const { addProduct } = useBasketStore();
 
-	if (!id || Array.isArray(id)) return;
+  if (!id || Array.isArray(id)) return;
 
-	const { data: product } = useItem(parseFloat(id));
+  const { data: product } = useItem(parseFloat(id));
 
-	if (!product) return;
+  if (!product) return;
 
-	const addToCart = () => {
-		Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-		navigation.goBack();
-		addProduct(product as Product);
-	};
+  const addToCart = () => {
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    navigation.goBack();
+    addProduct(product as Product);
+  };
+  let imageSource = require("@assets/images/defaultΙmage.png");
 
-	return (
-		<View style={styles.container}>
-			<Stack.Screen
-				options={{
-					headerTitle: category as string,
-					headerLeft: () => (
-						<Pressable onPress={() => navigation.goBack()}>
-							<Ionicons name="arrow-back" size={20} />
-						</Pressable>
-					),
-				}}
-			/>
-			<RemoteImage
-				path={product.img}
-				style={styles.image}
-				fallback="@assets/images/defaultΙmage.png"
-			/>
+  return (
+    <View className="bg-white flex-1">
+      <Stack.Screen
+        options={{
+          headerTitle: category as string,
+          headerLeft: () => (
+            <Pressable onPress={() => navigation.goBack()}>
+              <Ionicons name="arrow-back" size={20} />
+            </Pressable>
+          ),
+        }}
+      />
+      <RemoteImage
+        path={product.img}
+        style={styles.image}
+        fallback={imageSource}
+      />
 
-			<View style={styles.innerContainer}>
-				<Text style={styles.title}>{product.name}</Text>
-				<Text style={styles.price}>€{product.price}</Text>
-				<Text style={styles.info}>{product.info}</Text>
+      <View className="p-[10px]">
+        <Text className="text-[18px font-semibold my-3">{product.name}</Text>
+        <Text className="font-JakartaBold mt-auto text-black">
+          €{product.price}
+        </Text>
+        <Text className="text-black text-md">{product.info}</Text>
 
-				<Button text="Add to Cart" onPress={addToCart} />
-			</View>
-		</View>
-	);
+        <Button text="Add to Cart" onPress={addToCart} />
+      </View>
+    </View>
+  );
 };
 export default ProductDetailsScreen;
+
 const styles = StyleSheet.create({
-	container: {
-		backgroundColor: Colors.white,
-		flex: 1,
-	},
-	innerContainer: {
-		padding: 10,
-	},
-	image: {
-		width,
-		aspectRatio: 1,
-	},
-	title: {
-		fontSize: 18,
-		fontWeight: "600",
-		marginVertical: 10,
-	},
-	price: {
-		color: Colors.primary,
-		fontWeight: "bold",
-		marginTop: "auto",
-	},
-	info: {
-		color: Colors.black,
-		fontSize: 16,
-	},
+  image: {
+    width,
+    aspectRatio: 1,
+  },
 });
